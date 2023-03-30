@@ -1,28 +1,16 @@
-
-
-import java.awt.EventQueue;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.io.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
-import java.awt.CardLayout;
-import javax.swing.border.MatteBorder;
-import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class AdminFrame extends JFrame {
 
-    private JPanel contentPane;
-    private JTable bookTable;
     private DefaultTableModel dtmBooks;
     private JTextField barcodeField;
     private JTextField titleField;
@@ -46,7 +34,7 @@ public class AdminFrame extends JFrame {
         // Set up the main frame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 871, 553);
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
@@ -65,7 +53,7 @@ public class AdminFrame extends JFrame {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(0, 0, 830, 464);
         panel.add(scrollPane);
-        bookTable = new JTable();
+        JTable bookTable = new JTable();
         scrollPane.setViewportView(bookTable);
 
         // Set up the table model with column headers
@@ -90,28 +78,26 @@ public class AdminFrame extends JFrame {
         panel_3.setLayout(null);
 
         // Add an event listener to the tabbed pane to update when different "Add books" options are selected
-        tabbedPane.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                int chosenTab = tabbedPane.getSelectedIndex();
-                if (chosenTab == 1) {
-                    panel_2.removeAll();
-                    panel_3.removeAll();
-                    createPanel(panel_1, 1);
-                    panel_1.revalidate();
-                    panel_1.repaint();
-                } else if (chosenTab == 2) {
-                    panel_1.removeAll();
-                    panel_3.removeAll();
-                    createPanel(panel_2, 2);
-                    panel_2.revalidate();
-                    panel_2.repaint();
-                } else {
-                    panel_1.removeAll();
-                    panel_2.removeAll();
-                    createPanel(panel_3, 3);
-                    panel_3.revalidate();
-                    panel_3.repaint();
-                }
+        tabbedPane.addChangeListener(e -> {
+            int chosenTab = tabbedPane.getSelectedIndex();
+            if (chosenTab == 1) {
+                panel_2.removeAll();
+                panel_3.removeAll();
+                createPanel(panel_1, 1);
+                panel_1.revalidate();
+                panel_1.repaint();
+            } else if (chosenTab == 2) {
+                panel_1.removeAll();
+                panel_3.removeAll();
+                createPanel(panel_2, 2);
+                panel_2.revalidate();
+                panel_2.repaint();
+            } else {
+                panel_1.removeAll();
+                panel_2.removeAll();
+                createPanel(panel_3, 3);
+                panel_3.revalidate();
+                panel_3.repaint();
             }
         });
     }
@@ -212,11 +198,7 @@ public class AdminFrame extends JFrame {
             panel.add(extraCB);
 
             // Add an action listener to the button
-            btnAddBook.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    addPaperback();
-                }
-            });
+            btnAddBook.addActionListener(e -> addPaperback());
 
         } else if (chosenTab == 2) {
             extraLabel1.setText("Pages");
@@ -227,11 +209,7 @@ public class AdminFrame extends JFrame {
             panel.add(extraCB);
 
             // Add an action listener to the button
-            btnAddBook.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    addEbook();
-                }
-            });
+            btnAddBook.addActionListener(e -> addEbook());
         } else {
             extraLabel1.setText("Length");
             extraLabel2.setText("Format");
@@ -241,11 +219,7 @@ public class AdminFrame extends JFrame {
             panel.add(extraCB);
 
             // Add an action listener to the button
-            btnAddBook.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    addAudiobook();
-                }
-            });
+            btnAddBook.addActionListener(e -> addAudiobook());
         }
     }
 
