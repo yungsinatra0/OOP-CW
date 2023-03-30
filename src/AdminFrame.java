@@ -94,11 +94,23 @@ public class AdminFrame extends JFrame {
             public void stateChanged(ChangeEvent e) {
                 int chosenTab = tabbedPane.getSelectedIndex();
                 if (chosenTab == 1) {
+                    panel_2.removeAll();
+                    panel_3.removeAll();
                     createPanel(panel_1, 1);
+                    panel_1.revalidate();
+                    panel_1.repaint();
                 } else if (chosenTab == 2) {
+                    panel_1.removeAll();
+                    panel_3.removeAll();
                     createPanel(panel_2, 2);
+                    panel_2.revalidate();
+                    panel_2.repaint();
                 } else {
+                    panel_1.removeAll();
+                    panel_2.removeAll();
                     createPanel(panel_3, 3);
+                    panel_3.revalidate();
+                    panel_3.repaint();
                 }
             }
         });
