@@ -1,0 +1,8 @@
+
+
+public enum BookGenre {
+	POLITICS,
+	BUSINESS,
+	COMPUTERSCIENCE,
+	BIOGRAPHY;
+}
