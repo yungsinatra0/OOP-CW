@@ -19,11 +19,11 @@ public class Paperback extends Book {
 	}
 
 	public String toString() {
-		String language =  Helper.capitalize(getLanguage().name());
-		String genre = Helper.capitalize(getGenre().name());
+		String language =  Helper.capitalize(getLanguage().name().toLowerCase());
+		String genre = Helper.capitalize(getGenre().name().toLowerCase());
 		String date = Helper.transformFromDate(getDate());
 		String condition = this.condition.name().toLowerCase();
 		
-		return String.format("%d, ebook, %s, %s, %s, %s, %d, %f, %d, %s", getBarcode(), getTitle(), language, genre, date, getQuantity(), getPrice(), pages, condition);
+		return String.format("%d, paperback, %s, %s, %s, %s, %d, %f, %d, %s", getBarcode(), getTitle(), language, genre, date, getQuantity(), getPrice(), pages, condition);
 	}
 }
