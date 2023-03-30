@@ -85,7 +85,8 @@ public class FileReadWrite {
 	
 	public static void writeBook(Book book) {
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("Stock.txt"));
+			BufferedWriter writer = new BufferedWriter(new FileWriter("Stock.txt",true));
+			writer.newLine();
 			writer.write(book.toString());
 			writer.close();
 		}
