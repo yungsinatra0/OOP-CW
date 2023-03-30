@@ -9,6 +9,8 @@ import java.util.Date;
 import java.io.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
 import java.awt.CardLayout;
@@ -27,10 +29,10 @@ public class AdminFrame extends JFrame {
     private JTextField dateField;
     private JTextField quantityField;
     private JTextField priceField;
-    private JTextField pagesField;
-    private JComboBox<BookLanguage> languageCB;
-    private JComboBox<BookGenre> genreCB;
-    private JComboBox<Condition> conditionCB;
+    private JTextField extraField1;
+    private JComboBox languageCB;
+    private JComboBox genreCB;
+    private JComboBox extraCB;
 
     /**
      * Create the frame.
@@ -77,112 +79,162 @@ public class AdminFrame extends JFrame {
         tabbedPane.addTab("Add Paperback", null, panel_1, null);
         panel_1.setLayout(null);
 
-        // Add labels and input fields for the different attributes of a paperback book
-        JLabel lblNewLabel = new JLabel("Add Paperback Book");
-        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-        lblNewLabel.setBounds(332, 11, 191, 53);
-        panel_1.add(lblNewLabel);
-
-        JLabel barcodeLabel = new JLabel("Barcode");
-        barcodeLabel.setBounds(25, 74, 86, 17);
-        panel_1.add(barcodeLabel);
-
-        barcodeField = new JTextField();
-        barcodeField.setBounds(147, 71, 86, 20);
-        panel_1.add(barcodeField);
-        barcodeField.setColumns(10);
-
-        JLabel titleLabel = new JLabel("Title");
-        titleLabel.setBounds(25, 124, 86, 17);
-        panel_1.add(titleLabel);
-
-        titleField = new JTextField();
-        titleField.setBounds(147, 121, 86, 20);
-        panel_1.add(titleField);
-        titleField.setColumns(10);
-
-        JLabel languageLabel = new JLabel("Language");
-        languageLabel.setBounds(25, 168, 86, 17);
-        panel_1.add(languageLabel);
-
-        languageCB = new JComboBox(BookLanguage.values());
-        languageCB.setBounds(147, 165, 124, 20);
-        panel_1.add(languageCB);
-
-        JLabel genreLabel = new JLabel("Genre");
-        genreLabel.setBounds(25, 219, 86, 18);
-        panel_1.add(genreLabel);
-
-        genreCB = new JComboBox(BookGenre.values());
-        genreCB.setBounds(147, 215, 124, 22);
-        panel_1.add(genreCB);
-
-        JLabel dateLabel = new JLabel("Date");
-        dateLabel.setBounds(25, 267, 86, 17);
-        panel_1.add(dateLabel);
-
-        dateField = new JTextField();
-        dateField.setBounds(147, 264, 86, 20);
-        panel_1.add(dateField);
-        dateField.setColumns(10);
-
-        JLabel quantityLabel = new JLabel("Quantity");
-        quantityLabel.setBounds(25, 316, 86, 17);
-        panel_1.add(quantityLabel);
-
-        quantityField = new JTextField();
-        quantityField.setBounds(147, 313, 86, 20);
-        panel_1.add(quantityField);
-        quantityField.setColumns(10);
-
-        JLabel priceLabel = new JLabel("Retail Price");
-        priceLabel.setBounds(25, 364, 86, 17);
-        panel_1.add(priceLabel);
-
-        priceField = new JTextField();
-        priceField.setBounds(147, 361, 86, 20);
-        panel_1.add(priceField);
-        priceField.setColumns(10);
-
-        JLabel pagesLabel = new JLabel("Pages");
-        pagesLabel.setBounds(25, 412, 86, 17);
-        panel_1.add(pagesLabel);
-
-        pagesField = new JTextField();
-        pagesField.setBounds(147, 409, 86, 20);
-        panel_1.add(pagesField);
-        pagesField.setColumns(10);
-
-        JLabel conditionLabel = new JLabel("Condition");
-        conditionLabel.setBounds(25, 460, 86, 17);
-        panel_1.add(conditionLabel);
-
-        conditionCB = new JComboBox(Condition.values());
-        conditionCB.setBounds(147, 457, 124, 20);
-        panel_1.add(conditionCB);
-
-        // Create a button to add the book to the list
-        JButton btnAddPaperback = new JButton("Add Paperback");
-
-        // Add an action listener to the button
-        btnAddPaperback.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                addPaperback();
-            }
-        });
-
-        btnAddPaperback.setBounds(332, 460, 191, 23);
-        panel_1.add(btnAddPaperback);
-
         // Create a panel for adding a hardcover book
         JPanel panel_2 = new JPanel();
-        tabbedPane.addTab("Add Hardcover", null, panel_2, null);
+        tabbedPane.addTab("Add eBook", null, panel_2, null);
         panel_2.setLayout(null);
 
         // Create a panel for adding an audiobook
         JPanel panel_3 = new JPanel();
         tabbedPane.addTab("Add audiobook", null, panel_3, null);
         panel_3.setLayout(null);
+
+        // Add an event listener to the tabbed pane to update when different "Add books" options are selected
+        tabbedPane.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                int chosenTab = tabbedPane.getSelectedIndex();
+                if (chosenTab == 1) {
+                    createPanel(panel_1, 1);
+                } else if (chosenTab == 2) {
+                    createPanel(panel_2, 2);
+                } else {
+                    createPanel(panel_3, 3);
+                }
+            }
+        });
+    }
+
+    private void createPanel(JPanel panel, int chosenTab) {
+        // Add labels and input fields for the general attributes of a book
+        JLabel lblNewLabel = new JLabel("Add Paperback Book");
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel.setBounds(332, 11, 191, 53);
+        panel.add(lblNewLabel);
+
+        JLabel barcodeLabel = new JLabel("Barcode");
+        barcodeLabel.setBounds(25, 74, 86, 17);
+        panel.add(barcodeLabel);
+
+        barcodeField = new JTextField();
+        barcodeField.setBounds(147, 71, 86, 20);
+        panel.add(barcodeField);
+        barcodeField.setColumns(10);
+
+        JLabel titleLabel = new JLabel("Title");
+        titleLabel.setBounds(25, 124, 86, 17);
+        panel.add(titleLabel);
+
+        titleField = new JTextField();
+        titleField.setBounds(147, 121, 86, 20);
+        panel.add(titleField);
+        titleField.setColumns(10);
+
+        JLabel languageLabel = new JLabel("Language");
+        languageLabel.setBounds(25, 168, 86, 17);
+        panel.add(languageLabel);
+
+        languageCB = new JComboBox(BookLanguage.values());
+        languageCB.setBounds(147, 165, 124, 20);
+        panel.add(languageCB);
+
+        JLabel genreLabel = new JLabel("Genre");
+        genreLabel.setBounds(25, 219, 86, 18);
+        panel.add(genreLabel);
+
+        genreCB = new JComboBox(BookGenre.values());
+        genreCB.setBounds(147, 215, 124, 22);
+        panel.add(genreCB);
+
+        JLabel dateLabel = new JLabel("Date");
+        dateLabel.setBounds(25, 267, 86, 17);
+        panel.add(dateLabel);
+
+        dateField = new JTextField();
+        dateField.setBounds(147, 264, 86, 20);
+        panel.add(dateField);
+        dateField.setColumns(10);
+
+        JLabel quantityLabel = new JLabel("Quantity");
+        quantityLabel.setBounds(25, 316, 86, 17);
+        panel.add(quantityLabel);
+
+        quantityField = new JTextField();
+        quantityField.setBounds(147, 313, 86, 20);
+        panel.add(quantityField);
+        quantityField.setColumns(10);
+
+        JLabel priceLabel = new JLabel("Retail Price");
+        priceLabel.setBounds(25, 364, 86, 17);
+        panel.add(priceLabel);
+
+        priceField = new JTextField();
+        priceField.setBounds(147, 361, 86, 20);
+        panel.add(priceField);
+        priceField.setColumns(10);
+
+        JLabel extraLabel1 = new JLabel();
+        extraLabel1.setBounds(303, 267, 86, 17);
+        panel.add(extraLabel1);
+
+        extraField1 = new JTextField();
+        extraField1.setBounds(399, 265, 86, 20);
+        panel.add(extraField1);
+        extraField1.setColumns(10);
+
+        JLabel extraLabel2 = new JLabel();
+        extraLabel2.setBounds(303, 215, 86, 17);
+        panel.add(extraLabel2);
+
+        // Create a button to add the book to the list
+        JButton btnAddBook = new JButton("Add Book");
+        btnAddBook.setBounds(332, 361, 191, 23);
+        panel.add(btnAddBook);
+
+
+        if (chosenTab == 1) {
+            extraLabel1.setText("Pages");
+            extraLabel2.setText("Condition");
+
+            extraCB = new JComboBox(Condition.values());
+            extraCB.setBounds(399, 215, 124, 20);
+            panel.add(extraCB);
+
+            // Add an action listener to the button
+            btnAddBook.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    addPaperback();
+                }
+            });
+
+        } else if (chosenTab == 2) {
+            extraLabel1.setText("Pages");
+            extraLabel2.setText("Format");
+
+            extraCB = new JComboBox(Format.values());
+            extraCB.setBounds(399, 215, 124, 20);
+            panel.add(extraCB);
+
+            // Add an action listener to the button
+            btnAddBook.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    addEbook();
+                }
+            });
+        } else {
+            extraLabel1.setText("Length");
+            extraLabel2.setText("Format");
+
+            extraCB = new JComboBox(Format.values());
+            extraCB.setBounds(399, 215, 124, 20);
+            panel.add(extraCB);
+
+            // Add an action listener to the button
+            btnAddBook.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    addAudiobook();
+                }
+            });
+        }
     }
 
     private void addPaperback() {
@@ -194,8 +246,8 @@ public class AdminFrame extends JFrame {
             Date date = Helper.transformToDate(dateField.getText());
             int quantity = Integer.parseInt(quantityField.getText());
             float price = Float.parseFloat(priceField.getText());
-            int pages = Integer.parseInt(pagesField.getText());
-            Condition condition = (Condition) conditionCB.getSelectedItem();
+            int pages = Integer.parseInt(extraField1.getText());
+            Condition condition = (Condition) extraCB.getSelectedItem();
 
             FileReadWrite.writeBook(new Paperback(barcode, title, language, genre, date, quantity, price, pages, condition));
             JOptionPane.showMessageDialog(null, "Book added successfully");
@@ -204,6 +256,45 @@ public class AdminFrame extends JFrame {
         }
     }
 
+    private void addEbook() {
+        try {
+            long barcode = Long.parseLong(barcodeField.getText());
+            String title = titleField.getText();
+            BookLanguage language = (BookLanguage) languageCB.getSelectedItem();
+            BookGenre genre = (BookGenre) genreCB.getSelectedItem();
+            Date date = Helper.transformToDate(dateField.getText());
+            int quantity = Integer.parseInt(quantityField.getText());
+            float price = Float.parseFloat(priceField.getText());
+            int pages = Integer.parseInt(extraField1.getText());
+            Format format = (Format) extraCB.getSelectedItem();
+
+            FileReadWrite.writeBook(new eBook(barcode, title, language, genre, date, quantity, price, pages, format));
+            JOptionPane.showMessageDialog(null, "Book added successfully");
+        }
+
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Please enter valid data");
+        }
+    }
+
+    private void addAudiobook() {
+        try {
+            long barcode = Long.parseLong(barcodeField.getText());
+            String title = titleField.getText();
+            BookLanguage language = (BookLanguage) languageCB.getSelectedItem();
+            BookGenre genre = (BookGenre) genreCB.getSelectedItem();
+            Date date = Helper.transformToDate(dateField.getText());
+            int quantity = Integer.parseInt(quantityField.getText());
+            float price = Float.parseFloat(priceField.getText());
+            float length = Float.parseFloat(extraField1.getText());
+            Format format = (Format) extraCB.getSelectedItem();
+
+            FileReadWrite.writeBook(new Audiobook(barcode, title, language, genre, date, quantity, price, length, format));
+            JOptionPane.showMessageDialog(null, "Book added successfully");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Please enter valid data");
+        }
+    }
     private void fillTable(ArrayList<Book> bookList) {
         for (Book tempBook : bookList) {
             if (tempBook instanceof Paperback) {
