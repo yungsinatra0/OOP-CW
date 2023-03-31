@@ -1,4 +1,3 @@
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.*;
@@ -6,11 +5,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
 
-
 public class AdminFrame extends JFrame {
 
     private DefaultTableModel dtmBooks;
     private QuantityCompare qCompare = new QuantityCompare();
+    private ArrayList<Book> bookList = FileReadWrite.readBooks();
     private JTextField barcodeField;
     private JTextField titleField;
     private JTextField dateField;
@@ -25,8 +24,7 @@ public class AdminFrame extends JFrame {
      * Create the frame.
      */
     public AdminFrame(User currentUser) {
-        // Read in the list of books from file and sort them by quantity in descending order
-        ArrayList<Book> bookList = FileReadWrite.readBooks();
+        // Sort the list of books by quantity in ascending order
         bookList.sort(qCompare);
 
         // Set up the main frame
@@ -84,8 +82,6 @@ public class AdminFrame extends JFrame {
         JPanel panel_3 = new JPanel();
         tabbedPane.addTab("Add audiobook", null, panel_3, null);
         panel_3.setLayout(null);
-        
-
 
         // Add an event listener to the tabbed pane to update when different "Add books" options are selected
         tabbedPane.addChangeListener(e -> {
@@ -210,7 +206,7 @@ public class AdminFrame extends JFrame {
 
             // Add an action listener to the button
             btnAddBook.addActionListener(e -> {
-                addPaperback();
+                addBook(BookType.PAPERBACK);
                 clearFields();
                 updateTable();
             });
@@ -226,7 +222,7 @@ public class AdminFrame extends JFrame {
 
             // Add an action listener to the button
             btnAddBook.addActionListener(e -> {
-                addEbook();
+                addBook(BookType.EBOOK);
                 clearFields();
                 updateTable();
             });
@@ -241,35 +237,25 @@ public class AdminFrame extends JFrame {
 
             // Add an action listener to the button
             btnAddBook.addActionListener(e -> {
-                addAudiobook();
+                addBook(BookType.AUDIOBOOK);
                 clearFields();
                 updateTable();
             });
         }
     }
 
-    private void addPaperback() {
+    private void addBook(BookType type) {
         try {
             long barcode = Long.parseLong(barcodeField.getText());
-            String title = titleField.getText();
-            BookLanguage language = (BookLanguage) languageCB.getSelectedItem();
-            BookGenre genre = (BookGenre) genreCB.getSelectedItem();
-            Date date = Helper.transformToDate(dateField.getText());
-            int quantity = Integer.parseInt(quantityField.getText());
-            float price = Float.parseFloat(priceField.getText());
-            int pages = Integer.parseInt(extraField1.getText());
-            Condition condition = (Condition) extraCB.getSelectedItem();
 
-            FileReadWrite.writeBook(new Paperback(barcode, title, language, genre, date, quantity, price, pages, condition));
-            JOptionPane.showMessageDialog(null, "Book added successfully");
-        } catch (Exception e1) {
-            JOptionPane.showMessageDialog(null, "Please enter valid data");
-        }
-    }
+            // Check if barcode already exists in book list
+            for (Book book : bookList) {
+                if (book.getBarcode() == barcode) {
+                    JOptionPane.showMessageDialog(null, "Barcode already exists");
+                    return;
+                }
+            }
 
-    private void addEbook() {
-        try {
-            long barcode = Long.parseLong(barcodeField.getText());
             String title = titleField.getText();
             BookLanguage language = (BookLanguage) languageCB.getSelectedItem();
             BookGenre genre = (BookGenre) genreCB.getSelectedItem();
@@ -279,33 +265,25 @@ public class AdminFrame extends JFrame {
             int pages = Integer.parseInt(extraField1.getText());
             Format format = (Format) extraCB.getSelectedItem();
 
-            FileReadWrite.writeBook(new eBook(barcode, title, language, genre, date, quantity, price, pages, format));
-            JOptionPane.showMessageDialog(null, "Book added successfully");
-        }
-
-        catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Please enter valid data");
-        }
-    }
-
-    private void addAudiobook() {
-        try {
-            long barcode = Long.parseLong(barcodeField.getText());
-            String title = titleField.getText();
-            BookLanguage language = (BookLanguage) languageCB.getSelectedItem();
-            BookGenre genre = (BookGenre) genreCB.getSelectedItem();
-            Date date = Helper.transformToDate(dateField.getText());
-            int quantity = Integer.parseInt(quantityField.getText());
-            float price = Float.parseFloat(priceField.getText());
-            float length = Float.parseFloat(extraField1.getText());
-            Format format = (Format) extraCB.getSelectedItem();
-
-            FileReadWrite.writeBook(new Audiobook(barcode, title, language, genre, date, quantity, price, length, format));
+            switch (type) {
+                case PAPERBACK:
+                    Condition condition = (Condition) extraCB.getSelectedItem();
+                    FileReadWrite.writeBook(new Paperback(barcode, title, language, genre, date, quantity, price, pages, condition));
+                    break;
+                case EBOOK:
+                    FileReadWrite.writeBook(new eBook(barcode, title, language, genre, date, quantity, price, pages, format));
+                    break;
+                case AUDIOBOOK:
+                    float length = Float.parseFloat(extraField1.getText());
+                    FileReadWrite.writeBook(new Audiobook(barcode, title, language, genre, date, quantity, price, length, format));
+                    break;
+            }
             JOptionPane.showMessageDialog(null, "Book added successfully");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Please enter valid data");
         }
     }
+
     private void fillTable(ArrayList<Book> bookList) {
         for (Book tempBook : bookList) {
             if (tempBook instanceof Paperback) {
