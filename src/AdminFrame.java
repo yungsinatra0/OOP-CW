@@ -104,10 +104,10 @@ public class AdminFrame extends JFrame {
 
     private void createPanel(JPanel panel, int chosenTab) {
         // Add labels and input fields for the general attributes of a book
-        JLabel lblNewLabel = new JLabel("Add Paperback Book");
-        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-        lblNewLabel.setBounds(332, 11, 191, 53);
-        panel.add(lblNewLabel);
+        JLabel panelTitleLabel = new JLabel();
+        panelTitleLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+        panelTitleLabel.setBounds(332, 11, 191, 53);
+        panel.add(panelTitleLabel);
 
         JLabel barcodeLabel = new JLabel("Barcode");
         barcodeLabel.setBounds(25, 74, 86, 17);
@@ -190,6 +190,7 @@ public class AdminFrame extends JFrame {
 
 
         if (chosenTab == 1) {
+            panelTitleLabel.setText("Add Paperback");
             extraLabel1.setText("Pages");
             extraLabel2.setText("Condition");
 
@@ -201,6 +202,7 @@ public class AdminFrame extends JFrame {
             btnAddBook.addActionListener(e -> addPaperback());
 
         } else if (chosenTab == 2) {
+            panelTitleLabel.setText("Add eBook");
             extraLabel1.setText("Pages");
             extraLabel2.setText("Format");
 
@@ -211,6 +213,7 @@ public class AdminFrame extends JFrame {
             // Add an action listener to the button
             btnAddBook.addActionListener(e -> addEbook());
         } else {
+            panelTitleLabel.setText("Add Audiobook");
             extraLabel1.setText("Length");
             extraLabel2.setText("Format");
 
