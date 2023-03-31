@@ -19,8 +19,8 @@ public class eBook extends Book {
 	}
 	
 	public String toString() {
-		String language =  Helper.capitalize(getLanguage().name());
-		String genre = Helper.capitalize(getGenre().name());
+		String language =  Helper.capitalize(getLanguage().name().toLowerCase());
+		String genre = Helper.transformGenre(getGenre());
 		String date = Helper.transformFromDate(getDate());
 		
 		return String.format("%d, ebook, %s, %s, %s, %s, %d, %f, %d, %s", getBarcode(), getTitle(), language, genre, date, getQuantity(), getPrice(), pages, format.name());

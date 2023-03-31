@@ -20,7 +20,7 @@ public class Paperback extends Book {
 
 	public String toString() {
 		String language =  Helper.capitalize(getLanguage().name().toLowerCase());
-		String genre = Helper.capitalize(getGenre().name().toLowerCase());
+		String genre = Helper.transformGenre(getGenre());
 		String date = Helper.transformFromDate(getDate());
 		String condition = this.condition.name().toLowerCase();
 		
