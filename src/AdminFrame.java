@@ -1,17 +1,16 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+
 
 public class AdminFrame extends JFrame {
 
     private DefaultTableModel dtmBooks;
+    private QuantityCompare qCompare = new QuantityCompare();
     private JTextField barcodeField;
     private JTextField titleField;
     private JTextField dateField;
@@ -28,7 +27,6 @@ public class AdminFrame extends JFrame {
     public AdminFrame(User currentUser) {
         // Read in the list of books from file and sort them by quantity in descending order
         ArrayList<Book> bookList = FileReadWrite.readBooks();
-        QuantityCompare qCompare = new QuantityCompare();
         bookList.sort(qCompare);
 
         // Set up the main frame
@@ -38,6 +36,16 @@ public class AdminFrame extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+
+        // Add button for going back to log in frame
+        JButton logOutButton = new JButton("Log out");
+        logOutButton.setBounds(756, 7, 89, 23);
+        contentPane.add(logOutButton);
+        logOutButton.addActionListener(e -> {
+            LoginFrame loginFrame = new LoginFrame(FileReadWrite.readUsers());
+            loginFrame.setVisible(true);
+            dispose();
+        });
 
         // Create a tabbed pane for the different views
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -76,6 +84,8 @@ public class AdminFrame extends JFrame {
         JPanel panel_3 = new JPanel();
         tabbedPane.addTab("Add audiobook", null, panel_3, null);
         panel_3.setLayout(null);
+        
+
 
         // Add an event listener to the tabbed pane to update when different "Add books" options are selected
         tabbedPane.addChangeListener(e -> {
@@ -199,7 +209,11 @@ public class AdminFrame extends JFrame {
             panel.add(extraCB);
 
             // Add an action listener to the button
-            btnAddBook.addActionListener(e -> addPaperback());
+            btnAddBook.addActionListener(e -> {
+                addPaperback();
+                clearFields();
+                updateTable();
+            });
 
         } else if (chosenTab == 2) {
             panelTitleLabel.setText("Add eBook");
@@ -211,7 +225,11 @@ public class AdminFrame extends JFrame {
             panel.add(extraCB);
 
             // Add an action listener to the button
-            btnAddBook.addActionListener(e -> addEbook());
+            btnAddBook.addActionListener(e -> {
+                addEbook();
+                clearFields();
+                updateTable();
+            });
         } else {
             panelTitleLabel.setText("Add Audiobook");
             extraLabel1.setText("Length");
@@ -222,7 +240,11 @@ public class AdminFrame extends JFrame {
             panel.add(extraCB);
 
             // Add an action listener to the button
-            btnAddBook.addActionListener(e -> addAudiobook());
+            btnAddBook.addActionListener(e -> {
+                addAudiobook();
+                clearFields();
+                updateTable();
+            });
         }
     }
 
@@ -297,5 +319,24 @@ public class AdminFrame extends JFrame {
                 dtmBooks.addRow(rowdata);
             }
         }
+    }
+
+    private void clearFields() {
+        barcodeField.setText("");
+        titleField.setText("");
+        languageCB.setSelectedIndex(0);
+        genreCB.setSelectedIndex(0);
+        dateField.setText("");
+        quantityField.setText("");
+        priceField.setText("");
+        extraField1.setText("");
+        extraCB.setSelectedIndex(0);
+    }
+
+    private void updateTable() {
+        dtmBooks.setRowCount(0);
+        ArrayList<Book> bookList = FileReadWrite.readBooks();
+        bookList.sort(qCompare);
+        fillTable(bookList);
     }
 }
