@@ -59,7 +59,7 @@ public class LoginFrame extends JFrame {
 				UserType userType = userList.get(comboBox.getSelectedItem()).getType();
 				switch(userType) {
 					case ADMIN:
-						AdminFrame aFrame = new AdminFrame(userList.get(comboBox.getSelectedItem()));
+						AdminFrame aFrame = new AdminFrame();
 						aFrame.setVisible(true);
 						dispose();
 						break;
