@@ -4,12 +4,14 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
+import java.util.HashMap;
 
 public class AdminFrame extends JFrame {
 
     private DefaultTableModel dtmBooks;
-    private QuantityCompare qCompare = new QuantityCompare();
-    private ArrayList<Book> bookList = FileReadWrite.readBooks();
+    private QuantityCompare qCompare;
+    private ArrayList<Book> bookList;
+    private HashMap<Long, Book> bookMap;
     private JTextField barcodeField;
     private JTextField titleField;
     private JTextField dateField;
@@ -23,8 +25,11 @@ public class AdminFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public AdminFrame(User currentUser) {
+    public AdminFrame() {
         // Sort the list of books by quantity in ascending order
+        qCompare = new QuantityCompare();
+        bookMap = FileReadWrite.readBooks();
+        bookList = Helper.convertHashMapToArrayList(bookMap);
         bookList.sort(qCompare);
 
         // Set up the main frame
@@ -66,7 +71,7 @@ public class AdminFrame extends JFrame {
         dtmBooks = new DefaultTableModel();
         dtmBooks.setColumnIdentifiers(new Object[]{"Barcode", "Book type", "Title", "Language", "Genre", "Date", "Quantity", "Retail Price", "Pages", "Hours", "Format", "Condition"});
         bookTable.setModel(dtmBooks);
-        fillTable(bookList);
+        HelperTable.fillTable(bookList, dtmBooks);
 
         // Create a panel for adding a paperback book
         JPanel panel_1 = new JPanel();
@@ -208,7 +213,7 @@ public class AdminFrame extends JFrame {
             btnAddBook.addActionListener(e -> {
                 addBook(BookType.PAPERBACK);
                 clearFields();
-                updateTable();
+                HelperTable.updateTable(dtmBooks, true);
             });
 
         } else if (chosenTab == 2) {
@@ -224,7 +229,7 @@ public class AdminFrame extends JFrame {
             btnAddBook.addActionListener(e -> {
                 addBook(BookType.EBOOK);
                 clearFields();
-                updateTable();
+                HelperTable.updateTable(dtmBooks, true);
             });
         } else {
             panelTitleLabel.setText("Add Audiobook");
@@ -239,7 +244,7 @@ public class AdminFrame extends JFrame {
             btnAddBook.addActionListener(e -> {
                 addBook(BookType.AUDIOBOOK);
                 clearFields();
-                updateTable();
+                HelperTable.updateTable(dtmBooks, true);
             });
         }
     }
@@ -248,12 +253,10 @@ public class AdminFrame extends JFrame {
         try {
             long barcode = Long.parseLong(barcodeField.getText());
 
-            // Check if barcode already exists in book list
-            for (Book book : bookList) {
-                if (book.getBarcode() == barcode) {
-                    JOptionPane.showMessageDialog(null, "Barcode already exists");
-                    return;
-                }
+            // Check if barcode already exists in book list using hashmap
+            if (bookMap.containsKey(barcode)) {
+                JOptionPane.showMessageDialog(null, "Barcode already exists");
+                return;
             }
 
             String title = titleField.getText();
@@ -284,21 +287,6 @@ public class AdminFrame extends JFrame {
         }
     }
 
-    private void fillTable(ArrayList<Book> bookList) {
-        for (Book tempBook : bookList) {
-            if (tempBook instanceof Paperback) {
-                Object[] rowdata = new Object[]{tempBook.getBarcode(), BookType.PAPERBACK, tempBook.getTitle(), tempBook.getLanguage(), tempBook.getGenre(), tempBook.getDate(), tempBook.getQuantity(), tempBook.getPrice(), ((Paperback) tempBook).getPages(), null, null, ((Paperback) tempBook).getCondition()};
-                dtmBooks.addRow(rowdata);
-            } else if (tempBook instanceof eBook) {
-                Object[] rowdata = new Object[]{tempBook.getBarcode(), BookType.EBOOK, tempBook.getTitle(), tempBook.getLanguage(), tempBook.getGenre(), tempBook.getDate(), tempBook.getQuantity(), tempBook.getPrice(), ((eBook) tempBook).getPages(), null, ((eBook) tempBook).getFormat(), null};
-                dtmBooks.addRow(rowdata);
-            } else {
-                Object[] rowdata = new Object[]{tempBook.getBarcode(), BookType.AUDIOBOOK, tempBook.getTitle(), tempBook.getLanguage(), tempBook.getGenre(), tempBook.getDate(), tempBook.getQuantity(), tempBook.getPrice(), null, ((Audiobook) tempBook).getLength(), ((Audiobook) tempBook).getFormat(), null};
-                dtmBooks.addRow(rowdata);
-            }
-        }
-    }
-
     private void clearFields() {
         barcodeField.setText("");
         titleField.setText("");
@@ -309,12 +297,5 @@ public class AdminFrame extends JFrame {
         priceField.setText("");
         extraField1.setText("");
         extraCB.setSelectedIndex(0);
-    }
-
-    private void updateTable() {
-        dtmBooks.setRowCount(0);
-        ArrayList<Book> bookList = FileReadWrite.readBooks();
-        bookList.sort(qCompare);
-        fillTable(bookList);
     }
 }

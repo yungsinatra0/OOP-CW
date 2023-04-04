@@ -1,6 +1,6 @@
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 public class Helper {
 
@@ -32,5 +32,11 @@ public class Helper {
 		else {
 			return capitalize(genre.name().toLowerCase());
 		}
+	}
+
+	public static ArrayList<Book> convertHashMapToArrayList(HashMap<Long, Book> bookMap) {
+		Collection<Book> values = bookMap.values();
+
+		return new ArrayList<>(values);
 	}
 }
