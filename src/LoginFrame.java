@@ -1,22 +1,13 @@
-
-
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.DefaultComboBoxModel;
-import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent; // import the HashMap class
-
 
 public class LoginFrame extends JFrame {
 

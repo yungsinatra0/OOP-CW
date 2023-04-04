@@ -1,9 +1,6 @@
-import javax.lang.model.element.QualifiedNameable;
 import javax.swing.table.DefaultTableModel;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 
 public class HelperTable {
     public static void fillTable(ArrayList<Book> bookList, DefaultTableModel dtmBooks) {
@@ -24,7 +21,7 @@ public class HelperTable {
     public static void updateTable(DefaultTableModel dtmBooks, Boolean sortByQuantity) {
         ArrayList<Book> bookList = Helper.convertHashMapToArrayList(FileReadWrite.readBooks());
         dtmBooks.setRowCount(0);
-        Comparator<Book> comparator = null;
+        Comparator<Book> comparator;
         if (sortByQuantity) {
            comparator = new QuantityCompare();
         } else {
