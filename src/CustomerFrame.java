@@ -3,6 +3,8 @@ import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class CustomerFrame extends JFrame {
 
@@ -13,13 +15,17 @@ public class CustomerFrame extends JFrame {
     private HashMap<Long, Book> bookMap;
     private ArrayList<Book> basketList;
     private DefaultTableModel dtmBooks;
+    private DefaultTableModel dtmBasket;
     private JTextField barcodeField;
     private JSpinner filterSpinner;
+    private Customer currentUser;
+    private JTable basketTable;
 
     /**
      * Create the frame.
      */
-    public CustomerFrame(User currentUser) {
+    public CustomerFrame(Customer currentUser) {
+        this.currentUser = currentUser;
         // Initialize variables
         priceCompare = new PriceCompare();
         bookMap = FileReadWrite.readBooks();
@@ -80,16 +86,16 @@ public class CustomerFrame extends JFrame {
         searchButton.addActionListener(e -> searchBarcode());
 
         // Add labels and spinners for filtering to panel
-        JLabel filterLabel = new JLabel("Filter Audiobooks with length greater than");
-        filterLabel.setBounds(283, 11, 248, 14);
+        JLabel filterLabel = new JLabel("Search by length");
+        filterLabel.setBounds(231, 11, 98, 14);
         panel.add(filterLabel);
 
         filterSpinner = new JSpinner();
-        filterSpinner.setBounds(283, 32, 39, 17);
+        filterSpinner.setBounds(325, 9, 39, 17);
         panel.add(filterSpinner);
 
         JButton btnNewButton = new JButton("Filter");
-        btnNewButton.setBounds(414, 28, 89, 23);
+        btnNewButton.setBounds(374, 7, 89, 23);
         panel.add(btnNewButton);
 
         // Add action listener to filter button
@@ -97,7 +103,7 @@ public class CustomerFrame extends JFrame {
 
         // Add refresh button to panel
         JButton refreshButton = new JButton("Refresh table");
-        refreshButton.setBounds(611, 26, 124, 23);
+        refreshButton.setBounds(612, 26, 124, 23);
         panel.add(refreshButton);
 
         // Add action listener to refresh button
@@ -109,6 +115,14 @@ public class CustomerFrame extends JFrame {
             HelperTable.updateTable(dtmBooks, false);
         });
 
+        // Add button for adding book to basket
+        JButton btnNewButton_1 = new JButton("Add to Basket");
+        btnNewButton_1.addActionListener(e -> {
+            addToBasket();
+        });
+        btnNewButton_1.setBounds(478, 26, 124, 23);
+        panel.add(btnNewButton_1);
+
         // Add button for going back to log in frame
         JButton logOutButton = new JButton("Log out");
         logOutButton.setBounds(671, 7, 89, 23);
@@ -118,6 +132,17 @@ public class CustomerFrame extends JFrame {
             loginFrame.setVisible(true);
             dispose();
         });
+
+        // Set up table model and fill it with book basket
+        JScrollPane scrollPane_1 = new JScrollPane();
+        scrollPane_1.setBounds(10, 11, 725, 451);
+        panel_1.add(scrollPane_1);
+
+        basketTable = new JTable();
+        scrollPane_1.setViewportView(basketTable);
+        dtmBasket = new DefaultTableModel();
+        dtmBasket.setColumnIdentifiers(new Object[]{"Barcode", "Type", "Title", "Language", "Genre", "Date", "Quantity", "Price", "Pages", "Hours", "Format", "Condition"});
+        basketTable.setModel(dtmBasket);
 
     }
 
@@ -148,5 +173,36 @@ public class CustomerFrame extends JFrame {
         }
         dtmBooks.setRowCount(0);
         HelperTable.fillTable(searchResult, dtmBooks);
+    }
+
+    private void addToBasket() {
+        try {
+            // Get selected rows
+            int[] rows = bookTable.getSelectedRows();
+            if (rows.length == 0) {
+                throw new Exception();
+            }
+            // Get barcode from selected rows
+            for (int row : rows) {
+                // Get book from barcode
+                long barcode = (long) bookTable.getValueAt(row, 0);
+                Book book = bookMap.get(barcode);
+                if (book.getQuantity() == 0) {
+                    JOptionPane.showMessageDialog(null, String.format("Book %s is out of stock", book.getTitle()));
+                    return;
+                } else {
+                    // Add book to basket
+                    currentUser.addItem(book);
+                }
+            }
+            JOptionPane.showMessageDialog(null, "Book(s) successfully added to basket");
+            // Update basket table
+            HelperTable.fillTable(currentUser.getBasket(), dtmBasket);
+
+            //Clear selection
+            bookTable.clearSelection();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Please select a book");
+        }
     }
 }
