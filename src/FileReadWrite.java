@@ -18,10 +18,10 @@ public class FileReadWrite {
             while ((line = reader.readLine()) != null) {
                 String[] elements = line.split(", ");
                 if (elements[7].equals("admin")) {
-                    Admin tempUser = new Admin(Integer.parseInt(elements[0]), elements[1], elements[2], Integer.parseInt(elements[3]), elements[4], elements[5], UserType.ADMIN);
+                    Admin tempUser = new Admin(Integer.parseInt(elements[0]), elements[1], elements[2], Integer.parseInt(elements[3]), elements[4], elements[5]);
                     userList.put(tempUser.getUsername(), tempUser);
                 } else {
-                    Customer tempUser = new Customer(Integer.parseInt(elements[0]), elements[1], elements[2], Integer.parseInt(elements[3]), elements[4], elements[5], UserType.CUSTOMER, Float.parseFloat(elements[6]), new ArrayList<Book>());
+                    Customer tempUser = new Customer(Integer.parseInt(elements[0]), elements[1], elements[2], Integer.parseInt(elements[3]), elements[4], elements[5], Float.parseFloat(elements[6]), new ArrayList<Book>());
                     userList.put(tempUser.getUsername(), tempUser);
                 }
             }
@@ -83,6 +83,5 @@ public class FileReadWrite {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
-
     }
 }
