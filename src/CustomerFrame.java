@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.*;
@@ -94,12 +95,12 @@ public class CustomerFrame extends JFrame {
         filterSpinner.setBounds(325, 9, 39, 17);
         panel.add(filterSpinner);
 
-        JButton btnNewButton = new JButton("Filter");
-        btnNewButton.setBounds(374, 7, 89, 23);
-        panel.add(btnNewButton);
+        JButton filterButton = new JButton("Filter");
+        filterButton.setBounds(374, 7, 89, 23);
+        panel.add(filterButton);
 
         // Add action listener to filter button
-        btnNewButton.addActionListener(e -> filterBooks());
+        filterButton.addActionListener(e -> filterBooks());
 
         // Add refresh button to panel
         JButton refreshButton = new JButton("Refresh table");
@@ -116,12 +117,12 @@ public class CustomerFrame extends JFrame {
         });
 
         // Add button for adding book to basket
-        JButton btnNewButton_1 = new JButton("Add to Basket");
-        btnNewButton_1.addActionListener(e -> {
+        JButton addBasketButton = new JButton("Add to Basket");
+        addBasketButton.addActionListener(e -> {
             addToBasket();
         });
-        btnNewButton_1.setBounds(478, 26, 124, 23);
-        panel.add(btnNewButton_1);
+        addBasketButton.setBounds(478, 26, 124, 23);
+        panel.add(addBasketButton);
 
         // Add button for going back to log in frame
         JButton logOutButton = new JButton("Log out");
@@ -135,7 +136,7 @@ public class CustomerFrame extends JFrame {
 
         // Set up table model and fill it with book basket
         JScrollPane scrollPane_1 = new JScrollPane();
-        scrollPane_1.setBounds(10, 11, 725, 451);
+        scrollPane_1.setBounds(10, 60, 725, 402);
         panel_1.add(scrollPane_1);
 
         basketTable = new JTable();
@@ -144,8 +145,29 @@ public class CustomerFrame extends JFrame {
         dtmBasket.setColumnIdentifiers(new Object[]{"Barcode", "Type", "Title", "Language", "Genre", "Date", "Quantity", "Price", "Pages", "Hours", "Format", "Condition"});
         basketTable.setModel(dtmBasket);
 
-    }
+        // Add buttons to panel
+        JButton cancelBasketButton = new JButton("Cancel basket");
+        cancelBasketButton.setBounds(10, 11, 134, 23);
+        panel_1.add(cancelBasketButton);
 
+        cancelBasketButton.addActionListener(e -> {
+            currentUser.clearBasket();
+            dtmBasket.setRowCount(0);
+        });
+
+        JButton payBasketButton = new JButton("Pay for basket");
+        payBasketButton.setBounds(168, 11, 117, 23);
+        panel_1.add(payBasketButton);
+
+        payBasketButton.addActionListener(e -> {
+            try {
+                currentUser.payBasket();
+                dtmBasket.setRowCount(0);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage());
+            }
+        });
+    }
     private void searchBarcode() {
         ArrayList<Book> searchResult = new ArrayList<Book>();
         // Use bookMap to search for barcode
