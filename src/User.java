@@ -6,17 +6,15 @@ public abstract class User {
 	private int houseNumber;
 	private String postcode;
 	private String city;
-	private UserType type;
 	
 
-	public User(int uid, String username, String surname, int houseNumber, String postcode, String city, UserType type) {
+	public User(int uid, String username, String surname, int houseNumber, String postcode, String city) {
 		this.uid = uid;
 		this.username = username;
 		this.surname = surname;
 		this.houseNumber = houseNumber;
 		this.postcode = postcode;
 		this.city = city;
-		this.type = type;
 	}
 	
 	public int getUid() {
@@ -33,9 +31,5 @@ public abstract class User {
 	
 	public String getAddress() {
 		return String.format("Number: %s, City: %s, Postcode: %s", Integer.toString(this.houseNumber), this.city, this.postcode);
-	}
-	
-	public UserType getType() {
-		return this.type;
 	}
 }

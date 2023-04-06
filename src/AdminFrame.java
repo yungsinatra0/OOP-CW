@@ -21,11 +21,13 @@ public class AdminFrame extends JFrame {
     private JComboBox languageCB;
     private JComboBox genreCB;
     private JComboBox extraCB;
+    private Admin currentUser;
 
     /**
      * Create the frame.
      */
-    public AdminFrame() {
+    public AdminFrame(Admin currentUser) {
+        this.currentUser = currentUser;
         // Sort the list of books by quantity in ascending order
         qCompare = new QuantityCompare();
         bookMap = FileReadWrite.readBooks();
@@ -271,14 +273,14 @@ public class AdminFrame extends JFrame {
             switch (type) {
                 case PAPERBACK:
                     Condition condition = (Condition) extraCB.getSelectedItem();
-                    FileReadWrite.writeBook(new Paperback(barcode, title, language, genre, date, quantity, price, pages, condition));
+                    currentUser.addBook(bookMap, new Paperback(barcode, title, language, genre, date, quantity, price, pages, condition));
                     break;
                 case EBOOK:
-                    FileReadWrite.writeBook(new eBook(barcode, title, language, genre, date, quantity, price, pages, format));
+                    currentUser.addBook(bookMap, new eBook(barcode, title, language, genre, date, quantity, price, pages, format));
                     break;
                 case AUDIOBOOK:
                     float length = Float.parseFloat(extraField1.getText());
-                    FileReadWrite.writeBook(new Audiobook(barcode, title, language, genre, date, quantity, price, length, format));
+                    currentUser.addBook(bookMap, new Audiobook(barcode, title, language, genre, date, quantity, price, length, format));
                     break;
             }
             JOptionPane.showMessageDialog(null, "Book added successfully");

@@ -1,17 +1,22 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Customer extends User {
 	private float credits;
-	ArrayList<Book> basket = new ArrayList<Book>();
+	ArrayList<Book> basket;
 
-	public Customer(int uid, String username, String surname, int houseNumber, String postcode, String city, UserType type, float credits, ArrayList<Book> basket) {
-		super(uid, username, surname, houseNumber, postcode, city, type);
+	public Customer(int uid, String username, String surname, int houseNumber, String postcode, String city, float credits, ArrayList<Book> basket) {
+		super(uid, username, surname, houseNumber, postcode, city);
 		this.credits = credits;
 		this.basket = basket;
 	}
 	
 	public void addItem(Book book) {
 		this.basket.add(book);
+	}
+
+	public ArrayList<Book> getBasket() {
+		return this.basket;
 	}
 	
 	public void payBasket() {
