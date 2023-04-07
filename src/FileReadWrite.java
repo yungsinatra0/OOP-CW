@@ -8,10 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class FileReadWrite {
-    private static HashMap<String, User> userList = new HashMap<String, User>();
-    private static HashMap<Long, Book> bookMap = new HashMap<Long, Book>();
-
     public static HashMap<String, User> readUsers() {
+        HashMap<String, User> userList = new HashMap<String, User>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader("UserAccounts.txt"));
             String line = null;
@@ -32,8 +30,33 @@ public class FileReadWrite {
         return userList;
     }
 
-    public static HashMap<Long, Book> readBooks() {
+    public static void updateBalance(User user) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("UserAccounts.txt"));
+            String line;
+            String input = "";
+            while ((line = reader.readLine()) != null) {
+                String[] elements = line.split(", ");
+                int uid = Integer.parseInt(elements[0]);
+                if (uid == user.getUid()) {
+                    input += user.toString() + "\n";
+                } else {
+                    input += line + "\n";
+                }
+            }
+            reader.close();
+            BufferedWriter writer = new BufferedWriter(new FileWriter("UserAccounts.txt"));
+            writer.write(input);
+            writer.close();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
+
+    public static HashMap<Long, Book> readBooks() {
+        HashMap<Long, Book> bookMap = new HashMap<Long, Book>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader("Stock.txt"));
             String line = null;
@@ -83,5 +106,36 @@ public class FileReadWrite {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public static void updateStock(ArrayList<Book> books) {
+        // Get book object and update the quantity of that book in stock.txt
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("Stock.txt"));
+            String line = null;
+            boolean found = false;
+            String input = "";
+            while ((line = reader.readLine()) != null) {
+                String[] elements = line.split(", ");
+                found = false;
+                for (Book book : books) {
+                    if (Long.parseLong(elements[0]) == book.getBarcode()) {
+                        input += book.toString() + "\n";
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    input += line + "\n";
+                }
+            }
+            reader.close();
+            BufferedWriter writer = new BufferedWriter(new FileWriter("Stock.txt"));
+            writer.write(input);
+            writer.close();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }
