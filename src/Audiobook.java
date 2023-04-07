@@ -23,6 +23,6 @@ public class Audiobook extends Book{
 		String genre = Helper.transformGenre(getGenre());
 		String date = Helper.transformFromDate(getDate());
 		
-		return String.format("%d, ebook, %s, %s, %s, %s, %d, %f, %f, %s", getBarcode(), getTitle(), language, genre, date, getQuantity(), getPrice(), length, format.name());
+		return String.format("%d, audiobook, %s, %s, %s, %s, %d, %.2f, %.2f, %s", getBarcode(), getTitle(), language, genre, date, getQuantity(), getPrice(), length, format.name());
 	}
 }

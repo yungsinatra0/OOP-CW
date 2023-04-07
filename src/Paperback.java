@@ -24,6 +24,6 @@ public class Paperback extends Book {
 		String date = Helper.transformFromDate(getDate());
 		String condition = this.condition.name().toLowerCase();
 		
-		return String.format("%d, paperback, %s, %s, %s, %s, %d, %f, %d, %s", getBarcode(), getTitle(), language, genre, date, getQuantity(), getPrice(), pages, condition);
+		return String.format("%d, paperback, %s, %s, %s, %s, %d, %.2f, %d, %s", getBarcode(), getTitle(), language, genre, date, getQuantity(), getPrice(), pages, condition);
 	}
 }

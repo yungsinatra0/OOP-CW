@@ -46,6 +46,10 @@ public abstract class Book {
 	public float getPrice() {
 		return this.retailPrice;
 	}
+
+	public void setQuantity(int quantity) {
+		this.quantity -= quantity;
+	}
 	
 	public abstract String toString();
 }
