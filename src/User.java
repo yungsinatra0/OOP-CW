@@ -28,6 +28,18 @@ public abstract class User {
 	public String getSurname() {
 		return this.surname;
 	}
+
+	public int getHouseNumber() {
+		return this.houseNumber;
+	}
+
+	public String getPostcode() {
+		return this.postcode;
+	}
+
+	public String getCity() {
+		return this.city;
+	}
 	
 	public String getAddress() {
 		return String.format("Number: %s, City: %s, Postcode: %s", Integer.toString(this.houseNumber), this.city, this.postcode);
