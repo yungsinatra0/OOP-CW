@@ -1,11 +1,8 @@
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class CustomerFrame extends JFrame {
 
@@ -35,7 +32,7 @@ public class CustomerFrame extends JFrame {
 
         // Set up frame and content pane
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 786, 562);
+        setBounds(100, 100, 870, 552);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -43,7 +40,7 @@ public class CustomerFrame extends JFrame {
 
         // Set up tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        tabbedPane.setBounds(10, 11, 750, 501);
+        tabbedPane.setBounds(10, 11, 834, 501);
         contentPane.add(tabbedPane);
 
         // Add "View books" panel to tabbed pane
@@ -58,7 +55,7 @@ public class CustomerFrame extends JFrame {
 
         // Add table to panel
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 60, 725, 402);
+        scrollPane.setBounds(10, 60, 809, 402);
         panel.add(scrollPane);
 
         // Set up table model and fill it with book data
@@ -88,15 +85,15 @@ public class CustomerFrame extends JFrame {
 
         // Add labels and spinners for filtering to panel
         JLabel filterLabel = new JLabel("Search by length");
-        filterLabel.setBounds(231, 11, 98, 14);
+        filterLabel.setBounds(249, 11, 98, 14);
         panel.add(filterLabel);
 
         filterSpinner = new JSpinner();
-        filterSpinner.setBounds(325, 9, 39, 17);
+        filterSpinner.setBounds(249, 30, 47, 17);
         panel.add(filterSpinner);
 
         JButton filterButton = new JButton("Filter");
-        filterButton.setBounds(374, 7, 89, 23);
+        filterButton.setBounds(326, 26, 89, 23);
         panel.add(filterButton);
 
         // Add action listener to filter button
@@ -104,7 +101,7 @@ public class CustomerFrame extends JFrame {
 
         // Add refresh button to panel
         JButton refreshButton = new JButton("Refresh table");
-        refreshButton.setBounds(612, 26, 124, 23);
+        refreshButton.setBounds(695, 7, 124, 23);
         panel.add(refreshButton);
 
         // Add action listener to refresh button
@@ -121,12 +118,16 @@ public class CustomerFrame extends JFrame {
         addBasketButton.addActionListener(e -> {
             addToBasket();
         });
-        addBasketButton.setBounds(478, 26, 124, 23);
+        addBasketButton.setBounds(493, 28, 124, 23);
         panel.add(addBasketButton);
+        
+        JLabel lblNewLabel = new JLabel("Select the books you want to purchase");
+        lblNewLabel.setBounds(466, 8, 188, 20);
+        panel.add(lblNewLabel);
 
         // Add button for going back to log in frame
         JButton logOutButton = new JButton("Log out");
-        logOutButton.setBounds(671, 7, 89, 23);
+        logOutButton.setBounds(755, 7, 89, 23);
         contentPane.add(logOutButton);
         logOutButton.addActionListener(e -> {
             LoginFrame loginFrame = new LoginFrame(FileReadWrite.readUsers());
@@ -161,13 +162,16 @@ public class CustomerFrame extends JFrame {
 
         payBasketButton.addActionListener(e -> {
             try {
+                currentUser.updateStock(bookMap);
                 currentUser.payBasket();
                 dtmBasket.setRowCount(0);
+                HelperTable.updateTable(dtmBooks, false);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage());
             }
         });
     }
+
     private void searchBarcode() {
         ArrayList<Book> searchResult = new ArrayList<Book>();
         // Use bookMap to search for barcode
@@ -202,7 +206,7 @@ public class CustomerFrame extends JFrame {
             // Get selected rows
             int[] rows = bookTable.getSelectedRows();
             if (rows.length == 0) {
-                throw new Exception();
+                throw new Exception("Please select at least one book!");
             }
             // Get barcode from selected rows
             for (int row : rows) {
@@ -210,8 +214,7 @@ public class CustomerFrame extends JFrame {
                 long barcode = (long) bookTable.getValueAt(row, 0);
                 Book book = bookMap.get(barcode);
                 if (book.getQuantity() == 0) {
-                    JOptionPane.showMessageDialog(null, String.format("Book %s is out of stock", book.getTitle()));
-                    return;
+                    throw new Exception(String.format("Book %s is out of stock", book.getTitle()));
                 } else {
                     // Add book to basket
                     currentUser.addItem(book);
@@ -224,7 +227,7 @@ public class CustomerFrame extends JFrame {
             //Clear selection
             bookTable.clearSelection();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Please select a book");
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 }
