@@ -7,8 +7,7 @@ public class Helper {
 	public static Date transformToDate(String stringDate) {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		try {
-			Date releaseDate = formatter.parse(stringDate);
-			return releaseDate;
+			return formatter.parse(stringDate);
 		}
 		catch (ParseException e) {
 			e.printStackTrace();
