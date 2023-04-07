@@ -10,4 +10,8 @@ public class Admin extends User {
 		bookList.put(book.getBarcode(), book);
 		FileReadWrite.writeBook(book);
 	}
+
+	public String toString () {
+		return String.format("%d, %s, %s, %d, %s, %s, , customer", this.getUid(), this.getUsername(), this.getSurname(), this.getHouseNumber(), this.getPostcode(), this.getCity());
+	}
 }
