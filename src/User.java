@@ -44,4 +44,5 @@ public abstract class User {
 	public String getAddress() {
 		return String.format("Number: %s, City: %s, Postcode: %s", Integer.toString(this.houseNumber), this.city, this.postcode);
 	}
+	public abstract String toString();
 }

@@ -40,7 +40,7 @@ public class Customer extends User {
         }
     }
 
-    public float getBasketTotal() {
+    private float getBasketTotal() {
         float total = 0;
         for (Book book : this.basket) {
             total += book.getPrice();
@@ -56,13 +56,13 @@ public class Customer extends User {
         this.credits -= amount;
     }
 
+    public String toString() {
+        return String.format("%d, %s, %s, %d, %s, %s, %.2f, customer", this.getUid(), this.getUsername(), this.getSurname(), this.getHouseNumber(), this.getPostcode(), this.getCity(), this.getCredits());
+    }
+
     public void updateStock(HashMap<Long, Book> bookList) {
         for (Book book : this.basket) {
             bookList.get(book.getBarcode()).setQuantity(1);
         }
-    }
-
-    public String toString() {
-        return String.format("%d, %s, %s, %d, %s, %s, %.2f, customer", this.getUid(), this.getUsername(), this.getSurname(), this.getHouseNumber(), this.getPostcode(), this.getCity(), this.getCredits());
     }
 }
