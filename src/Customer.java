@@ -1,6 +1,4 @@
 import javax.swing.*;
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,18 +12,33 @@ public class Customer extends User {
         this.basket = basket;
     }
 
+    /**
+     * Adds a book to the customer basket
+     * @param book Book to add
+     */
     public void addItem(Book book) {
         this.basket.add(book);
     }
 
+    /**
+     * Gets the customer basket
+     * @return ArrayList of books in the basket
+     */
     public ArrayList<Book> getBasket() {
         return this.basket;
     }
 
+    /**
+     * Removes all books from customer basket
+     */
     public void clearBasket() {
         this.basket.clear();
     }
 
+    /**
+     * Pays for the basket and updates the stock and balance
+     * @throws IllegalArgumentException if the customer does not have enough credits to pay for the basket
+     */
     public void payBasket() {
         float total = this.getBasketTotal();
         if (this.credits >= total) {
@@ -40,6 +53,10 @@ public class Customer extends User {
         }
     }
 
+    /**
+     * Gets the total price of the basket
+     * @return float of the total price
+     */
     private float getBasketTotal() {
         float total = 0;
         for (Book book : this.basket) {
@@ -48,18 +65,34 @@ public class Customer extends User {
         return total;
     }
 
+    /**
+     * Gets the customer balance
+     * @return float of the customer balance
+     */
     public float getCredits() {
         return this.credits;
     }
 
+    /**
+     * Sets the customer balance by subtracting the amount
+     * @param amount float of the amount to set the balance to
+     */
     public void setCredits(float amount) {
         this.credits -= amount;
     }
 
+    /**
+     * Returns the customer details as a string
+     * @return String of the customer details
+     */
     public String toString() {
         return String.format("%d, %s, %s, %d, %s, %s, %.2f, customer", this.getUid(), this.getUsername(), this.getSurname(), this.getHouseNumber(), this.getPostcode(), this.getCity(), this.getCredits());
     }
 
+    /**
+     * Updates the stock of the books in the basket
+     * @param bookList HashMap of all books
+     */
     public void updateStock(HashMap<Long, Book> bookList) {
         for (Book book : this.basket) {
             bookList.get(book.getBarcode()).setQuantity(1);

@@ -27,7 +27,9 @@ public class AdminFrame extends JFrame {
      * Create the frame.
      */
     public AdminFrame(Admin currentUser) {
+        // Initialize variables
         this.currentUser = currentUser;
+
         // Sort the list of books by quantity in ascending order
         qCompare = new QuantityCompare();
         bookMap = FileReadWrite.readBooks();
@@ -94,18 +96,21 @@ public class AdminFrame extends JFrame {
         tabbedPane.addChangeListener(e -> {
             int chosenTab = tabbedPane.getSelectedIndex();
             if (chosenTab == 1) {
+                // Create panel for adding a paperback book
                 panel_2.removeAll();
                 panel_3.removeAll();
                 createPanel(panel_1, 1);
                 panel_1.revalidate();
                 panel_1.repaint();
             } else if (chosenTab == 2) {
+                // Create panel for adding an eBook
                 panel_1.removeAll();
                 panel_3.removeAll();
                 createPanel(panel_2, 2);
                 panel_2.revalidate();
                 panel_2.repaint();
             } else {
+                // Create panel for adding an audiobook
                 panel_1.removeAll();
                 panel_2.removeAll();
                 createPanel(panel_3, 3);
@@ -116,12 +121,13 @@ public class AdminFrame extends JFrame {
     }
 
     private void createPanel(JPanel panel, int chosenTab) {
-        // Add labels and input fields for the general attributes of a book
+        // Add labels and input fields for the 'general attributes' of a book
         JLabel panelTitleLabel = new JLabel();
         panelTitleLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
         panelTitleLabel.setBounds(332, 11, 191, 53);
         panel.add(panelTitleLabel);
 
+        // Label and input field for barcode
         JLabel barcodeLabel = new JLabel("Barcode");
         barcodeLabel.setBounds(25, 74, 86, 17);
         panel.add(barcodeLabel);
@@ -131,6 +137,7 @@ public class AdminFrame extends JFrame {
         panel.add(barcodeField);
         barcodeField.setColumns(10);
 
+        // Label and input field for title
         JLabel titleLabel = new JLabel("Title");
         titleLabel.setBounds(25, 124, 86, 17);
         panel.add(titleLabel);
@@ -140,6 +147,7 @@ public class AdminFrame extends JFrame {
         panel.add(titleField);
         titleField.setColumns(10);
 
+        // Label and combo box for Language
         JLabel languageLabel = new JLabel("Language");
         languageLabel.setBounds(25, 168, 86, 17);
         panel.add(languageLabel);
@@ -148,6 +156,7 @@ public class AdminFrame extends JFrame {
         languageCB.setBounds(147, 165, 124, 20);
         panel.add(languageCB);
 
+        // Label and combo box for Genre
         JLabel genreLabel = new JLabel("Genre");
         genreLabel.setBounds(25, 219, 86, 18);
         panel.add(genreLabel);
@@ -156,6 +165,7 @@ public class AdminFrame extends JFrame {
         genreCB.setBounds(147, 215, 124, 22);
         panel.add(genreCB);
 
+        // Label and input field for Date
         JLabel dateLabel = new JLabel("Date");
         dateLabel.setBounds(25, 267, 86, 17);
         panel.add(dateLabel);
@@ -165,6 +175,7 @@ public class AdminFrame extends JFrame {
         panel.add(dateField);
         dateField.setColumns(10);
 
+        // Label and input field for Quantity
         JLabel quantityLabel = new JLabel("Quantity");
         quantityLabel.setBounds(25, 316, 86, 17);
         panel.add(quantityLabel);
@@ -174,6 +185,7 @@ public class AdminFrame extends JFrame {
         panel.add(quantityField);
         quantityField.setColumns(10);
 
+        // Label and input field for Retail Price
         JLabel priceLabel = new JLabel("Retail Price");
         priceLabel.setBounds(25, 364, 86, 17);
         panel.add(priceLabel);
@@ -183,6 +195,7 @@ public class AdminFrame extends JFrame {
         panel.add(priceField);
         priceField.setColumns(10);
 
+        // Create labels and input fields for the 'specific attributes' of a book (depending on the type of book)
         JLabel extraLabel1 = new JLabel();
         extraLabel1.setBounds(303, 267, 86, 17);
         panel.add(extraLabel1);
@@ -203,6 +216,7 @@ public class AdminFrame extends JFrame {
 
 
         if (chosenTab == 1) {
+            // Change the title of the panel and the labels and input fields for the 'specific attributes' of a paperback
             panelTitleLabel.setText("Add Paperback");
             extraLabel1.setText("Pages");
             extraLabel2.setText("Condition");
@@ -211,7 +225,7 @@ public class AdminFrame extends JFrame {
             extraCB.setBounds(399, 215, 124, 20);
             panel.add(extraCB);
 
-            // Add an action listener to the button
+            // Add an action listener to add book, clear the fields and update the table
             btnAddBook.addActionListener(e -> {
                 addBook(BookType.PAPERBACK);
                 clearFields();
@@ -219,6 +233,7 @@ public class AdminFrame extends JFrame {
             });
 
         } else if (chosenTab == 2) {
+            // Change the title of the panel and the labels and input fields for the 'specific attributes' of an eBook
             panelTitleLabel.setText("Add eBook");
             extraLabel1.setText("Pages");
             extraLabel2.setText("Format");
@@ -227,13 +242,14 @@ public class AdminFrame extends JFrame {
             extraCB.setBounds(399, 215, 124, 20);
             panel.add(extraCB);
 
-            // Add an action listener to the button
+            // Add an action listener to the button to add book, clear the fields and update the table
             btnAddBook.addActionListener(e -> {
                 addBook(BookType.EBOOK);
                 clearFields();
                 HelperTable.updateTable(dtmBooks, true);
             });
         } else {
+            // Change the title of the panel and the labels and input fields for the 'specific attributes' of an audiobook
             panelTitleLabel.setText("Add Audiobook");
             extraLabel1.setText("Length");
             extraLabel2.setText("Format");
@@ -242,7 +258,7 @@ public class AdminFrame extends JFrame {
             extraCB.setBounds(399, 215, 124, 20);
             panel.add(extraCB);
 
-            // Add an action listener to the button
+            // Add an action listener to the button to add book, clear the fields and update the table
             btnAddBook.addActionListener(e -> {
                 addBook(BookType.AUDIOBOOK);
                 clearFields();
@@ -251,6 +267,10 @@ public class AdminFrame extends JFrame {
         }
     }
 
+    /**
+     * Method to add a book to the list
+     * @param type the type of book to add
+     */
     private void addBook(BookType type) {
         try {
             long barcode = Long.parseLong(barcodeField.getText());
@@ -270,6 +290,7 @@ public class AdminFrame extends JFrame {
             int pages = Integer.parseInt(extraField1.getText());
             Format format = (Format) extraCB.getSelectedItem();
 
+            // Add book to the list depending on the type of book (using different constructors)
             switch (type) {
                 case PAPERBACK:
                     Condition condition = (Condition) extraCB.getSelectedItem();
@@ -289,6 +310,9 @@ public class AdminFrame extends JFrame {
         }
     }
 
+    /**
+     * Method to clear the fields
+     */
     private void clearFields() {
         barcodeField.setText("");
         titleField.setText("");

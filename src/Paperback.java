@@ -9,15 +9,27 @@ public class Paperback extends Book {
 		this.pages = pages;
 		this.condition = condition;		
 	}
-	
+
+	/**
+	 * Returns the number of pages in the book
+	 * @return int pages
+	 */
 	public int getPages() {
 		return this.pages;
 	}
-	
+
+	/**
+	 * Returns the condition of the book
+	 * @return Condition
+	 */
 	public Condition getCondition() {
 		return this.condition;
 	}
 
+	/**
+	 * Returns a string representation of the book
+	 * @return String
+	 */
 	public String toString() {
 		String language =  Helper.capitalize(getLanguage().name().toLowerCase());
 		String genre = Helper.transformGenre(getGenre());

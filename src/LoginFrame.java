@@ -7,7 +7,7 @@ import java.awt.Font;
 import java.util.HashMap;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent; // import the HashMap class
+import java.awt.event.ActionEvent;
 
 public class LoginFrame extends JFrame {
 
@@ -44,15 +44,17 @@ public class LoginFrame extends JFrame {
             }
         });
 
-        // Event listener on button that will exit current frame and open a new one based on chosen user
+        // Event listener on log in button that will exit current frame and open a new one based on chosen user
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean isAdmin = userList.get(comboBox.getSelectedItem()) instanceof Admin;
                 if (isAdmin) {
+                    // If user is admin, open admin frame
                     AdminFrame aFrame = new AdminFrame((Admin) userList.get(comboBox.getSelectedItem()));
                     aFrame.setVisible(true);
                     dispose();
                 } else {
+                    // If user is customer, open customer frame
                     CustomerFrame cFrame = new CustomerFrame((Customer) userList.get(comboBox.getSelectedItem()));
                     cFrame.setVisible(true);
                     dispose();

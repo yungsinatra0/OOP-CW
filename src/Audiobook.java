@@ -9,15 +9,26 @@ public class Audiobook extends Book{
 		this.length = length;
 		this.format = format;
 	}
-	
+	/**
+	 * Getter for length
+	 * @return the length
+	 */
 	public float getLength() {
 		return this.length;
 	}
-	
+
+	/**
+	 * Getter for format
+	 * @return the format
+	 */
 	public Format getFormat() {
 		return this.format;
 	}
-	
+
+	/**
+	 * Method to return a string representation of the object
+	 * @return String
+	 */
 	public String toString() {
 		String language =  Helper.capitalize(getLanguage().name().toLowerCase());
 		String genre = Helper.transformGenre(getGenre());

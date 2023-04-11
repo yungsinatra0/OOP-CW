@@ -11,7 +11,6 @@ public class CustomerFrame extends JFrame {
     private PriceCompare priceCompare;
     private ArrayList<Book> bookList;
     private HashMap<Long, Book> bookMap;
-    private ArrayList<Book> basketList;
     private DefaultTableModel dtmBooks;
     private DefaultTableModel dtmBasket;
     private JTextField barcodeField;
@@ -71,11 +70,13 @@ public class CustomerFrame extends JFrame {
         searchLabel.setBounds(10, 11, 109, 14);
         panel.add(searchLabel);
 
+        // Add text field for barcode search
         barcodeField = new JTextField();
         barcodeField.setBounds(10, 29, 109, 20);
         panel.add(barcodeField);
         barcodeField.setColumns(10);
 
+        // Add search button to panel
         JButton searchButton = new JButton("Search");
         searchButton.setBounds(129, 28, 89, 23);
         panel.add(searchButton);
@@ -88,10 +89,12 @@ public class CustomerFrame extends JFrame {
         filterLabel.setBounds(249, 11, 98, 14);
         panel.add(filterLabel);
 
+        // Add spinner for filtering by length of AudioBook
         filterSpinner = new JSpinner();
         filterSpinner.setBounds(249, 30, 47, 17);
         panel.add(filterSpinner);
 
+        // Add filter button to panel
         JButton filterButton = new JButton("Filter");
         filterButton.setBounds(326, 26, 89, 23);
         panel.add(filterButton);
@@ -120,7 +123,8 @@ public class CustomerFrame extends JFrame {
         });
         addBasketButton.setBounds(493, 28, 124, 23);
         panel.add(addBasketButton);
-        
+
+        // Add label to panel for asking user to select books
         JLabel lblNewLabel = new JLabel("Select the books you want to purchase");
         lblNewLabel.setBounds(466, 8, 188, 20);
         panel.add(lblNewLabel);
@@ -140,6 +144,7 @@ public class CustomerFrame extends JFrame {
         scrollPane_1.setBounds(10, 60, 725, 402);
         panel_1.add(scrollPane_1);
 
+        // Set up table model in another tab and fill it with basket data
         basketTable = new JTable();
         scrollPane_1.setViewportView(basketTable);
         dtmBasket = new DefaultTableModel();
@@ -151,15 +156,18 @@ public class CustomerFrame extends JFrame {
         cancelBasketButton.setBounds(10, 11, 134, 23);
         panel_1.add(cancelBasketButton);
 
+        // Add action listener to cancel basket button to clear basket and table
         cancelBasketButton.addActionListener(e -> {
             currentUser.clearBasket();
             dtmBasket.setRowCount(0);
         });
 
+        // Add button to pay for basket
         JButton payBasketButton = new JButton("Pay for basket");
         payBasketButton.setBounds(168, 11, 117, 23);
         panel_1.add(payBasketButton);
 
+        // Add action listener to pay basket button to pay for basket and clear basket and table
         payBasketButton.addActionListener(e -> {
             try {
                 currentUser.updateStock(bookMap);
@@ -172,6 +180,9 @@ public class CustomerFrame extends JFrame {
         });
     }
 
+    /**
+     * Method to search for book by barcode
+     */
     private void searchBarcode() {
         ArrayList<Book> searchResult = new ArrayList<Book>();
         // Use bookMap to search for barcode
@@ -185,6 +196,9 @@ public class CustomerFrame extends JFrame {
         }
     }
 
+    /**
+     * Method to filter books by length of audiobook
+     */
     private void filterBooks() {
         // Get value from spinner
         int hours = (int) filterSpinner.getValue();
@@ -201,6 +215,9 @@ public class CustomerFrame extends JFrame {
         HelperTable.fillTable(searchResult, dtmBooks);
     }
 
+    /**
+     * Method to add books to basket
+     */
     private void addToBasket() {
         try {
             // Get selected rows

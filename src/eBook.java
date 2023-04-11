@@ -9,15 +9,27 @@ public class eBook extends Book {
 		this.pages = pages;
 		this.format = format;
 	}
-	
+
+	/**
+	 * Get the pages of the eBook
+	 * @return int pages
+	 */
 	public int getPages() {
 		return this.pages;
 	}
-	
+
+	/**
+	 * Get the format of the eBook
+	 * @return Format format
+	 */
 	public Format getFormat() {
 		return this.format;
 	}
-	
+
+	/**
+	 * Return eBook as a string
+	 * @return String eBook
+	 */
 	public String toString() {
 		String language =  Helper.capitalize(getLanguage().name().toLowerCase());
 		String genre = Helper.transformGenre(getGenre());

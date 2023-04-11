@@ -18,35 +18,67 @@ public abstract class Book {
 		this.quantity = quantity;
 		this.retailPrice = retailPrice;
 	}
-	
+
+	/**
+	 * Getter for barcode
+	 * @return long
+	 */
 	public long getBarcode() {
 		return this.barcode;
 	}
-	
+
+	/**
+	 * Getter for title
+	 * @return String
+	 */
 	public String getTitle() {
 		return this.title;
 	}
-	
+
+	/**
+	 * Getter for language
+	 * @return BookLanguage
+	 */
 	public BookLanguage getLanguage() {
 		return this.language;
 	}
-	
+
+	/**
+	 * Getter for genre
+	 * @return BookGenre
+	 */
 	public BookGenre getGenre() {
 		return this.genre;
 	}
-	
+
+	/**
+	 * Getter for releaseDate
+	 * @return Date
+	 */
 	public Date getDate() {
 		return this.releaseDate;
 	}
-	
+
+	/**
+	 * Getter for quantity
+	 * @return int
+	 */
 	public int getQuantity() {
 		return this.quantity;
 	}
-	
+
+	/**
+	 * Getter for retailPrice
+	 * @return float
+	 */
 	public float getPrice() {
 		return this.retailPrice;
 	}
 
+	/**
+	 * Setter for quantity. Decreases quantity by given value.
+	 * @param quantity int
+	 */
 	public void setQuantity(int quantity) {
 		this.quantity -= quantity;
 	}
