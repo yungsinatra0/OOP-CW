@@ -83,7 +83,16 @@ public class CustomerFrame extends JFrame {
         panel.add(searchButton);
 
         // Add action listener to search button
-        searchButton.addActionListener(e -> searchBarcode());
+        searchButton.addActionListener(e -> {
+            // Check if input string is a number and is not blank
+            if (Helper.isNumeric(barcodeField.getText()) && !barcodeField.getText().equals("")) {
+                // Search for book with barcode
+                searchBarcode();
+            } else {
+                // Show error message
+                JOptionPane.showMessageDialog(null, "Please enter a valid barcode");
+            }
+        });
 
         // Add spinner for filtering by length of AudioBook
         filterSpinner = new JSpinner();
@@ -140,6 +149,10 @@ public class CustomerFrame extends JFrame {
         filterAudiobooks.addActionListener(e -> {
             if (filterAudiobooks.isSelected()) {
                 filterBooks();
+            }
+            if (!filterAudiobooks.isSelected()) {
+                // Refresh table
+                HelperTable.updateTable(dtmBooks, false);
             }
         });
 

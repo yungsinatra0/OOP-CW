@@ -64,4 +64,18 @@ public class Helper {
 
 		return new ArrayList<>(values);
 	}
+
+	/**
+	 * Checks if a string is numeric
+	 * @param str String to be checked
+	 * @return True if numeric, false otherwise
+	 */
+	public static boolean isNumeric(String str)
+	{
+		for (char c : str.toCharArray())
+		{
+			if (!Character.isDigit(c)) return false;
+		}
+		return true;
+	}
 }
