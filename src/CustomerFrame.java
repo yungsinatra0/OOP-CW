@@ -23,6 +23,7 @@ public class CustomerFrame extends JFrame {
      */
     public CustomerFrame(Customer currentUser) {
         this.currentUser = currentUser;
+
         // Initialize variables
         priceCompare = new PriceCompare();
         bookMap = FileReadWrite.readBooks();
@@ -84,23 +85,10 @@ public class CustomerFrame extends JFrame {
         // Add action listener to search button
         searchButton.addActionListener(e -> searchBarcode());
 
-        // Add labels and spinners for filtering to panel
-        JLabel filterLabel = new JLabel("Search by length");
-        filterLabel.setBounds(249, 11, 98, 14);
-        panel.add(filterLabel);
-
         // Add spinner for filtering by length of AudioBook
         filterSpinner = new JSpinner();
-        filterSpinner.setBounds(249, 30, 47, 17);
+        filterSpinner.setBounds(358, 30, 47, 17);
         panel.add(filterSpinner);
-
-        // Add filter button to panel
-        JButton filterButton = new JButton("Filter");
-        filterButton.setBounds(326, 26, 89, 23);
-        panel.add(filterButton);
-
-        // Add action listener to filter button
-        filterButton.addActionListener(e -> filterBooks());
 
         // Add refresh button to panel
         JButton refreshButton = new JButton("Refresh table");
@@ -121,13 +109,17 @@ public class CustomerFrame extends JFrame {
         addBasketButton.addActionListener(e -> {
             addToBasket();
         });
-        addBasketButton.setBounds(493, 28, 124, 23);
+        addBasketButton.setBounds(493, 27, 124, 23);
         panel.add(addBasketButton);
 
         // Add label to panel for asking user to select books
         JLabel lblNewLabel = new JLabel("Select the books you want to purchase");
         lblNewLabel.setBounds(466, 8, 188, 20);
         panel.add(lblNewLabel);
+
+        JCheckBox filterAudiobooks = new JCheckBox("Filter Audiobooks");
+        filterAudiobooks.setBounds(241, 28, 109, 21);
+        panel.add(filterAudiobooks);
 
         // Add button for going back to log in frame
         JButton logOutButton = new JButton("Log out");
@@ -141,8 +133,26 @@ public class CustomerFrame extends JFrame {
 
         // Set up table model and fill it with book basket
         JScrollPane scrollPane_1 = new JScrollPane();
-        scrollPane_1.setBounds(10, 60, 725, 402);
+        scrollPane_1.setBounds(10, 60, 809, 402);
         panel_1.add(scrollPane_1);
+
+        // Add action listener to filter audiobooks checkbox
+        filterAudiobooks.addActionListener(e -> {
+            if (filterAudiobooks.isSelected()) {
+                filterBooks();
+            }
+        });
+
+        // Add change listener to filter spinner
+        filterSpinner.addChangeListener(e -> {
+            // Check if value is negative and set it to 0 if it is
+            if ((int) filterSpinner.getValue() < 0) {
+                filterSpinner.setValue(0);
+            }
+            if (filterAudiobooks.isSelected()) {
+                filterBooks();
+            }
+        });
 
         // Set up table model in another tab and fill it with basket data
         basketTable = new JTable();
