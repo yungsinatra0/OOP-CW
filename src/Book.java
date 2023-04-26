@@ -76,11 +76,17 @@ public abstract class Book {
 	}
 
 	/**
-	 * Setter for quantity. Decreases quantity by given value.
+	 * Setter for quantity (used for stock). Decrease or increase the quantity of the book by the given quantity based
+	 * on the given boolean.
 	 * @param quantity int
+	 * @param isAdd boolean
 	 */
-	public void setQuantity(int quantity) {
-		this.quantity -= quantity;
+	public void setQuantity(int quantity, boolean isAdd) {
+		if (isAdd) {
+			this.quantity += quantity;
+		} else {
+			this.quantity -= quantity;
+		}
 	}
 	
 	public abstract String toString();

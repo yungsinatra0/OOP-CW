@@ -32,7 +32,7 @@ public class CustomerFrame extends JFrame {
 
         // Set up frame and content pane
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 870, 552);
+        setBounds(100, 100, 1145, 640);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -40,7 +40,7 @@ public class CustomerFrame extends JFrame {
 
         // Set up tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        tabbedPane.setBounds(10, 11, 834, 501);
+        tabbedPane.setBounds(10, 11, 1111, 582);
         contentPane.add(tabbedPane);
 
         // Add "View books" panel to tabbed pane
@@ -55,7 +55,7 @@ public class CustomerFrame extends JFrame {
 
         // Add table to panel
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 60, 809, 402);
+        scrollPane.setBounds(10, 60, 1086, 485);
         panel.add(scrollPane);
 
         // Set up table model and fill it with book data
@@ -68,7 +68,7 @@ public class CustomerFrame extends JFrame {
 
         // Add labels and text fields for search to panel
         JLabel searchLabel = new JLabel("Search using barcode");
-        searchLabel.setBounds(10, 11, 109, 14);
+        searchLabel.setBounds(10, 11, 179, 14);
         panel.add(searchLabel);
 
         // Add text field for barcode search
@@ -96,12 +96,27 @@ public class CustomerFrame extends JFrame {
 
         // Add spinner for filtering by length of AudioBook
         filterSpinner = new JSpinner();
-        filterSpinner.setBounds(358, 30, 47, 17);
+        filterSpinner.setBounds(402, 30, 47, 17);
         panel.add(filterSpinner);
+        filterSpinner.setEnabled(false);
+
+        // Add button for adding book to basket
+        JButton addBasketButton = new JButton("Add to Basket");
+        addBasketButton.setBounds(656, 27, 124, 23);
+        panel.add(addBasketButton);
+
+        // Add label to panel for asking user to select books
+        JLabel lblNewLabel = new JLabel("Select the books you want to purchase");
+        lblNewLabel.setBounds(620, 8, 274, 20);
+        panel.add(lblNewLabel);
+
+        JCheckBox filterAudiobooks = new JCheckBox("Filter Audiobooks");
+        filterAudiobooks.setBounds(241, 28, 135, 21);
+        panel.add(filterAudiobooks);
 
         // Add refresh button to panel
         JButton refreshButton = new JButton("Refresh table");
-        refreshButton.setBounds(695, 7, 124, 23);
+        refreshButton.setBounds(972, 7, 124, 23);
         panel.add(refreshButton);
 
         // Add action listener to refresh button
@@ -109,30 +124,15 @@ public class CustomerFrame extends JFrame {
             // Clear Spinner and text field
             barcodeField.setText("");
             filterSpinner.setValue(0);
+            filterSpinner.setEnabled(false);
+            filterAudiobooks.setSelected(false);
             // Refresh table
             HelperTable.updateTable(dtmBooks, false);
         });
 
-        // Add button for adding book to basket
-        JButton addBasketButton = new JButton("Add to Basket");
-        addBasketButton.addActionListener(e -> {
-            addToBasket();
-        });
-        addBasketButton.setBounds(493, 27, 124, 23);
-        panel.add(addBasketButton);
-
-        // Add label to panel for asking user to select books
-        JLabel lblNewLabel = new JLabel("Select the books you want to purchase");
-        lblNewLabel.setBounds(466, 8, 188, 20);
-        panel.add(lblNewLabel);
-
-        JCheckBox filterAudiobooks = new JCheckBox("Filter Audiobooks");
-        filterAudiobooks.setBounds(241, 28, 109, 21);
-        panel.add(filterAudiobooks);
-
         // Add button for going back to log in frame
         JButton logOutButton = new JButton("Log out");
-        logOutButton.setBounds(755, 7, 89, 23);
+        logOutButton.setBounds(1032, 10, 89, 23);
         contentPane.add(logOutButton);
         logOutButton.addActionListener(e -> {
             LoginFrame loginFrame = new LoginFrame(FileReadWrite.readUsers());
@@ -142,17 +142,19 @@ public class CustomerFrame extends JFrame {
 
         // Set up table model and fill it with book basket
         JScrollPane scrollPane_1 = new JScrollPane();
-        scrollPane_1.setBounds(10, 60, 809, 402);
+        scrollPane_1.setBounds(10, 60, 1086, 485);
         panel_1.add(scrollPane_1);
 
         // Add action listener to filter audiobooks checkbox
         filterAudiobooks.addActionListener(e -> {
             if (filterAudiobooks.isSelected()) {
                 filterBooks();
+                filterSpinner.setEnabled(true);
             }
             if (!filterAudiobooks.isSelected()) {
                 // Refresh table
                 HelperTable.updateTable(dtmBooks, false);
+                filterSpinner.setEnabled(false);
             }
         });
 
@@ -171,8 +173,18 @@ public class CustomerFrame extends JFrame {
         basketTable = new JTable();
         scrollPane_1.setViewportView(basketTable);
         dtmBasket = new DefaultTableModel();
-        dtmBasket.setColumnIdentifiers(new Object[]{"Barcode", "Type", "Title", "Language", "Genre", "Date", "Quantity", "Price", "Pages", "Hours", "Format", "Condition"});
+        dtmBasket.setColumnIdentifiers(new Object[]{"Barcode", "Type", "Title", "Language", "Genre", "Date", "Quantity (in basket)", "Price", "Pages", "Hours", "Format", "Condition"});
         basketTable.setModel(dtmBasket);
+
+        // Add label to show current balance
+        JLabel userBalance = new JLabel(String.format("Current balance: %.2f", currentUser.getCredits()));
+        userBalance.setBounds(632, 16, 172, 13);
+        panel_1.add(userBalance);
+
+        // Add label to show total basket price
+        JLabel basketTotal = new JLabel(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
+        basketTotal.setBounds(632, 37, 172, 13);
+        panel_1.add(basketTotal);
 
         // Add buttons to panel
         JButton cancelBasketButton = new JButton("Cancel basket");
@@ -183,6 +195,7 @@ public class CustomerFrame extends JFrame {
         cancelBasketButton.addActionListener(e -> {
             currentUser.clearBasket();
             dtmBasket.setRowCount(0);
+            basketTotal.setText(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
         });
 
         // Add button to pay for basket
@@ -190,13 +203,21 @@ public class CustomerFrame extends JFrame {
         payBasketButton.setBounds(168, 11, 117, 23);
         panel_1.add(payBasketButton);
 
+        // Add action listener to add to basket button to add book to basket and update table
+        addBasketButton.addActionListener(e -> {
+            addToBasket();
+            basketTotal.setText(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
+        });
+
         // Add action listener to pay basket button to pay for basket and clear basket and table
         payBasketButton.addActionListener(e -> {
             try {
-                currentUser.updateStock(bookMap);
-                currentUser.payBasket();
-                dtmBasket.setRowCount(0);
-                HelperTable.updateTable(dtmBooks, false);
+                currentUser.payBasket(); // Pay for basket
+                currentUser.updateStock(bookMap); // Update stock in the bookMap
+                dtmBasket.setRowCount(0); // Clear basket table
+                HelperTable.updateTable(dtmBooks, false); // Refresh book table with updated stock
+                basketTotal.setText(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
+                userBalance.setText(String.format("Current balance: %.2f", currentUser.getCredits()));
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage());
             }

@@ -149,6 +149,7 @@ public class FileReadWrite {
                     // If the barcode of the book purchased matches the barcode of the book in the file, update the line
                     // with the new book details
                     if (Long.parseLong(elements[0]) == book.getBarcode()) {
+                        // TODO: Update the quantity of the book in the file with the new quantity without using quantity from basket (use quantity from stock.txt)
                         input += book.toString() + "\n";
                         found = true;
                     }

@@ -17,6 +17,14 @@ public class Customer extends User {
      * @param book Book to add
      */
     public void addItem(Book book) {
+        // Change the quantity of the book in the basket if book already exists if not set quantity to 1
+        for (Book b : this.basket) {
+            if (b.getBarcode() == book.getBarcode()) {
+                b.setQuantity(1, true);
+                return;
+            }
+        }
+        book.setQuantity(book.getQuantity() - 1, false);
         this.basket.add(book);
     }
 
@@ -57,11 +65,12 @@ public class Customer extends User {
      * Gets the total price of the basket
      * @return float of the total price
      */
-    private float getBasketTotal() {
+    public float getBasketTotal() {
         float total = 0;
         for (Book book : this.basket) {
-            total += book.getPrice();
+            total += (book.getPrice() * book.getQuantity());
         }
+
         return total;
     }
 
@@ -95,7 +104,7 @@ public class Customer extends User {
      */
     public void updateStock(HashMap<Long, Book> bookList) {
         for (Book book : this.basket) {
-            bookList.get(book.getBarcode()).setQuantity(1);
+            bookList.get(book.getBarcode()).setQuantity(1, false);
         }
     }
 }

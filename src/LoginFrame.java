@@ -38,8 +38,7 @@ public class LoginFrame extends JFrame {
         // Event listener on combo box that will change the label to the current selected user
         comboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JComboBox cb = (JComboBox) e.getSource();
-                String selectedUser = (String) cb.getSelectedItem();
+                String selectedUser = (String) comboBox.getSelectedItem();
                 lblNewLabel_2.setText(String.format("You have selected: %s (%s)", selectedUser, userList.get(selectedUser) instanceof Admin ? "Admin" : "Customer"));
             }
         });
@@ -47,15 +46,16 @@ public class LoginFrame extends JFrame {
         // Event listener on log in button that will exit current frame and open a new one based on chosen user
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                boolean isAdmin = userList.get(comboBox.getSelectedItem()) instanceof Admin;
+                User chosenUser = userList.get(comboBox.getSelectedItem());
+                boolean isAdmin = chosenUser instanceof Admin;
                 if (isAdmin) {
                     // If user is admin, open admin frame
-                    AdminFrame aFrame = new AdminFrame((Admin) userList.get(comboBox.getSelectedItem()));
+                    AdminFrame aFrame = new AdminFrame((Admin) chosenUser);
                     aFrame.setVisible(true);
                     dispose();
                 } else {
                     // If user is customer, open customer frame
-                    CustomerFrame cFrame = new CustomerFrame((Customer) userList.get(comboBox.getSelectedItem()));
+                    CustomerFrame cFrame = new CustomerFrame((Customer) chosenUser);
                     cFrame.setVisible(true);
                     dispose();
                 }
