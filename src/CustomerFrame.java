@@ -5,7 +5,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class CustomerFrame extends JFrame {
-    
+
     private JTable bookTable;
     private ArrayList<Book> bookList;
     private HashMap<Long, Book> bookMap;
@@ -209,12 +209,23 @@ public class CustomerFrame extends JFrame {
         // Add action listener to pay basket button to pay for basket and clear basket and table
         payBasketButton.addActionListener(e -> {
             try {
-                currentUser.payBasket(); // Pay for basket
-                currentUser.updateStock(bookMap); // Update stock in the bookMap
-                dtmBasket.setRowCount(0); // Clear basket table
-                HelperTable.updateTable(dtmBooks, false); // Refresh book table with updated stock
-                basketTotal.setText(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
-                userBalance.setText(String.format("Current balance: %.2f", currentUser.getCredits()));
+                //TODO: Add method to check if quantity of books in basket is not bigger than stock
+                if (currentUser.getBasket().size() == 0) {
+                    JOptionPane.showMessageDialog(null, "Basket is empty!");
+                    throw new Exception("Basket is empty!");
+                }
+                else if (isBasketMoreThanStock()) {
+                    JOptionPane.showMessageDialog(null, "There is not enough stock for the books in your basket!");
+                    throw new Exception("There is not enough stock for the books in your basket!");
+                }
+                else {
+                    currentUser.payBasket(); // Pay for basket
+                    currentUser.updateStock(bookMap); // Update stock in the bookMap
+                    dtmBasket.setRowCount(0); // Clear basket table
+                    HelperTable.updateTable(dtmBooks, false); // Refresh book table with updated stock
+                    basketTotal.setText(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
+                    userBalance.setText(String.format("Current balance: %.2f", currentUser.getCredits()));
+                }
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage());
             }
@@ -270,6 +281,8 @@ public class CustomerFrame extends JFrame {
             for (int row : rows) {
                 // Get book from barcode
                 long barcode = (long) bookTable.getValueAt(row, 0);
+                // Make a copy of the book
+                // TODO: Make a copy of the book instead of being a reference to bookMap maybe?
                 Book book = bookMap.get(barcode);
                 if (book.getQuantity() == 0) {
                     // throw new Exception(String.format("Book %s is out of stock", book.getTitle()));
@@ -288,5 +301,15 @@ public class CustomerFrame extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
+    }
+
+    private boolean isBasketMoreThanStock () {
+        for (Book book : currentUser.getBasket()) {
+            if (book.getQuantity() > bookMap.get(book.getBarcode()).getQuantity()) {
+                JOptionPane.showMessageDialog(null, String.format("Book %s has more quantity in basket than stock!", book.getTitle()));
+                return true;
+            }
+        }
+        return false;
     }
 }
