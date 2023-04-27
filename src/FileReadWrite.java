@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class FileReadWrite {
     /**
      * Reads the user accounts from the UserAccounts.txt file and returns a HashMap of the users.
+     *
      * @return HashMap of users
      */
     public static HashMap<String, User> readUsers() {
@@ -38,6 +39,7 @@ public class FileReadWrite {
 
     /**
      * Writes the new user account balance to the UserAccounts.txt file after a transaction has been made.
+     *
      * @param user User that has made a transaction
      */
     public static void updateBalance(User user) {
@@ -69,6 +71,7 @@ public class FileReadWrite {
 
     /**
      * Reads the books from the Stock.txt file and returns a HashMap of the books.
+     *
      * @return HashMap of books
      */
     public static HashMap<Long, Book> readBooks() {
@@ -117,6 +120,7 @@ public class FileReadWrite {
 
     /**
      * Writes a newly added book to the Stock.txt file.
+     *
      * @param book Book to be written to the file
      */
     public static void writeBook(Book book) {
@@ -133,6 +137,7 @@ public class FileReadWrite {
 
     /**
      * Updates the quantity of a book in the Stock.txt file.
+     *
      * @param books ArrayList of books that have been purchased
      */
     public static void updateStock(ArrayList<Book> books) {
@@ -149,14 +154,20 @@ public class FileReadWrite {
                     // If the barcode of the book purchased matches the barcode of the book in the file, update the line
                     // with the new book details
                     if (Long.parseLong(elements[0]) == book.getBarcode()) {
-                        // TODO: Update the quantity of the book in the file with the new quantity without using quantity from basket (use quantity from stock.txt)
+                        // Some freaky mathematics to update the quantity of the book in the file using the quantity of
+                        // the book purchased and the quantity of the book in the file
+                        // ex: if quantity in file is 17 and quantity in basket is 2, the remaining books should be:
+                        // 2 + 17 - 2 * 2 = 15
+                        int quantity = Integer.parseInt(elements[6]);
+                        book.setQuantity(book.getQuantity() * 2, false);
+                        book.setQuantity(quantity, true);
                         input += book.toString() + "\n";
-                        found = true;
+                        found = true; // Set found to true so that the book object is added to the input line instead
                     }
                 }
                 if (!found) {
                     // If the barcode of the book purchased does not match the barcode of the book in the file,
-                    // just add the line
+                    // just add the old line
                     input += line + "\n";
                 }
             }

@@ -40,7 +40,7 @@ public class AdminFrame extends JFrame {
 
         // Set up the main frame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1143, 674);
+        setBounds(100, 100, 1145, 674);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);

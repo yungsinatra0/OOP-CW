@@ -51,10 +51,10 @@ public class Customer extends User {
         float total = this.getBasketTotal();
         if (this.credits >= total) {
             this.setCredits(total);
-            FileReadWrite.updateStock(this.basket);
-            FileReadWrite.updateBalance(this);
             String message = String.format("Thank you for the purchase! £%.2f paid and your remaining credit balance is £%.2f. Your delivery address is %s.", this.getBasketTotal(), this.getCredits(), this.getAddress());
             JOptionPane.showMessageDialog(null, message);
+            FileReadWrite.updateBalance(this);
+            FileReadWrite.updateStock(this.basket);
             this.clearBasket();
         } else {
             throw new IllegalArgumentException("Insufficient funds");
