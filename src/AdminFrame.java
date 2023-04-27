@@ -9,7 +9,6 @@ import java.util.HashMap;
 public class AdminFrame extends JFrame {
 
     private DefaultTableModel dtmBooks;
-    private QuantityCompare qCompare;
     private ArrayList<Book> bookList;
     private HashMap<Long, Book> bookMap;
     private JTextField barcodeField;
@@ -23,7 +22,6 @@ public class AdminFrame extends JFrame {
     private JComboBox extraCB;
     private JComboBox bookType;
     private Admin currentUser;
-    private JPanel contentPane;
 
     /**
      * Create the frame.
@@ -33,7 +31,7 @@ public class AdminFrame extends JFrame {
         this.currentUser = currentUser;
 
         // Sort the list of books by quantity in ascending order
-        qCompare = new QuantityCompare();
+        QuantityCompare qCompare = new QuantityCompare();
         bookMap = FileReadWrite.readBooks();
         bookList = Helper.convertHashMapToArrayList(bookMap);
         bookList.sort(qCompare);
@@ -41,7 +39,7 @@ public class AdminFrame extends JFrame {
         // Set up the main frame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1145, 674);
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);

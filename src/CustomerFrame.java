@@ -5,18 +5,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class CustomerFrame extends JFrame {
-
-    private JPanel contentPane;
+    
     private JTable bookTable;
-    private PriceCompare priceCompare;
     private ArrayList<Book> bookList;
     private HashMap<Long, Book> bookMap;
     private DefaultTableModel dtmBooks;
     private DefaultTableModel dtmBasket;
     private JTextField barcodeField;
-    private JSpinner filterSpinner;
     private Customer currentUser;
-    private JTable basketTable;
+    private JSpinner filterSpinner;
+    private JLabel basketTotal;
 
     /**
      * Create the frame.
@@ -25,7 +23,7 @@ public class CustomerFrame extends JFrame {
         this.currentUser = currentUser;
 
         // Initialize variables
-        priceCompare = new PriceCompare();
+        PriceCompare priceCompare = new PriceCompare();
         bookMap = FileReadWrite.readBooks();
         bookList = Helper.convertHashMapToArrayList(bookMap);
         bookList.sort(priceCompare);
@@ -33,7 +31,7 @@ public class CustomerFrame extends JFrame {
         // Set up frame and content pane
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1145, 640);
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
@@ -170,7 +168,7 @@ public class CustomerFrame extends JFrame {
         });
 
         // Set up table model in another tab and fill it with basket data
-        basketTable = new JTable();
+        JTable basketTable = new JTable();
         scrollPane_1.setViewportView(basketTable);
         dtmBasket = new DefaultTableModel();
         dtmBasket.setColumnIdentifiers(new Object[]{"Barcode", "Type", "Title", "Language", "Genre", "Date", "Quantity (in basket)", "Price", "Pages", "Hours", "Format", "Condition"});
@@ -182,7 +180,7 @@ public class CustomerFrame extends JFrame {
         panel_1.add(userBalance);
 
         // Add label to show total basket price
-        JLabel basketTotal = new JLabel(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
+        basketTotal = new JLabel("Total basket price: 0.00");
         basketTotal.setBounds(632, 37, 172, 13);
         panel_1.add(basketTotal);
 
@@ -195,7 +193,7 @@ public class CustomerFrame extends JFrame {
         cancelBasketButton.addActionListener(e -> {
             currentUser.clearBasket();
             dtmBasket.setRowCount(0);
-            basketTotal.setText(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
+            basketTotal.setText("Total basket price: 0.00");
         });
 
         // Add button to pay for basket
@@ -206,7 +204,6 @@ public class CustomerFrame extends JFrame {
         // Add action listener to add to basket button to add book to basket and update table
         addBasketButton.addActionListener(e -> {
             addToBasket();
-            basketTotal.setText(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
         });
 
         // Add action listener to pay basket button to pay for basket and clear basket and table
@@ -275,16 +272,17 @@ public class CustomerFrame extends JFrame {
                 long barcode = (long) bookTable.getValueAt(row, 0);
                 Book book = bookMap.get(barcode);
                 if (book.getQuantity() == 0) {
-                    throw new Exception(String.format("Book %s is out of stock", book.getTitle()));
+                    // throw new Exception(String.format("Book %s is out of stock", book.getTitle()));
+                    JOptionPane.showMessageDialog(null, String.format("Book %s is out of stock", book.getTitle()));
                 } else {
                     // Add book to basket
                     currentUser.addItem(book);
                 }
             }
-            JOptionPane.showMessageDialog(null, "Book(s) successfully added to basket");
             // Update basket table
             HelperTable.fillTable(currentUser.getBasket(), dtmBasket);
-
+            JOptionPane.showMessageDialog(null, "Book(s) successfully added to basket");
+            basketTotal.setText(String.format("Total basket price: %.2f", currentUser.getBasketTotal()));
             //Clear selection
             bookTable.clearSelection();
         } catch (Exception e) {

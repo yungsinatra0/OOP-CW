@@ -70,7 +70,6 @@ public class Customer extends User {
         for (Book book : this.basket) {
             total += (book.getPrice() * book.getQuantity());
         }
-
         return total;
     }
 
