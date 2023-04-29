@@ -213,12 +213,10 @@ public class CustomerFrame extends JFrame {
                 if (currentUser.getBasket().size() == 0) {
                     JOptionPane.showMessageDialog(null, "Basket is empty!");
                     throw new Exception("Basket is empty!");
-                }
-                else if (isBasketMoreThanStock()) {
+                } else if (isBasketMoreThanStock()) {
                     JOptionPane.showMessageDialog(null, "There is not enough stock for the books in your basket!");
                     throw new Exception("There is not enough stock for the books in your basket!");
-                }
-                else {
+                } else {
                     currentUser.payBasket(); // Pay for basket
                     currentUser.updateStock(bookMap); // Update stock in the bookMap
                     dtmBasket.setRowCount(0); // Clear basket table
@@ -227,7 +225,7 @@ public class CustomerFrame extends JFrame {
                     userBalance.setText(String.format("Current balance: %.2f", currentUser.getCredits()));
                 }
             } catch (Exception exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage());
+                // JOptionPane.showMessageDialog(null, exception.getMessage());
             }
         });
     }
@@ -288,8 +286,17 @@ public class CustomerFrame extends JFrame {
                     // throw new Exception(String.format("Book %s is out of stock", book.getTitle()));
                     JOptionPane.showMessageDialog(null, String.format("Book %s is out of stock", book.getTitle()));
                 } else {
-                    // Add book to basket
-                    currentUser.addItem(book);
+                    // Need to make copy of the book otherwise it references the bookMap
+                    if (book instanceof Paperback) {
+                        Paperback tempBook = new Paperback((Paperback) book);
+                        currentUser.addItem(tempBook);
+                    } else if (book instanceof eBook) {
+                        eBook tempBook = new eBook((eBook) book);
+                        currentUser.addItem(tempBook);
+                    } else if (book instanceof Audiobook) {
+                        Audiobook tempBook = new Audiobook((Audiobook) book);
+                        currentUser.addItem(tempBook);
+                    }
                 }
             }
             // Update basket table
@@ -303,7 +310,7 @@ public class CustomerFrame extends JFrame {
         }
     }
 
-    private boolean isBasketMoreThanStock () {
+    private boolean isBasketMoreThanStock() {
         for (Book book : currentUser.getBasket()) {
             if (book.getQuantity() > bookMap.get(book.getBarcode()).getQuantity()) {
                 JOptionPane.showMessageDialog(null, String.format("Book %s has more quantity in basket than stock!", book.getTitle()));

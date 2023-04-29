@@ -12,6 +12,7 @@ public class Admin extends User {
 	 * @param book
 	 */
 	public void addBook(HashMap<Long, Book> bookList, Book book) {
+		//TODO: Add functionality to check whether the added book is already there
 		bookList.put(book.getBarcode(), book);
 		FileReadWrite.writeBook(book);
 	}

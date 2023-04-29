@@ -9,6 +9,12 @@ public class Audiobook extends Book{
 		this.length = length;
 		this.format = format;
 	}
+
+	public Audiobook(Audiobook book) {
+		super(book.getBarcode(), book.getTitle(), book.getLanguage(), book.getGenre(), book.getDate(), book.getQuantity(), book.getPrice());
+		this.length = book.getLength();
+		this.format = book.getFormat();
+	}
 	/**
 	 * Getter for length
 	 * @return the length

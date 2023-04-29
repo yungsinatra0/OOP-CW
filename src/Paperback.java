@@ -10,6 +10,12 @@ public class Paperback extends Book {
 		this.condition = condition;		
 	}
 
+	public Paperback(Paperback book) {
+		super(book.getBarcode(), book.getTitle(), book.getLanguage(), book.getGenre(), book.getDate(), book.getQuantity(), book.getPrice());
+		this.pages = book.getPages();
+		this.condition = book.getCondition();
+	}
+
 	/**
 	 * Returns the number of pages in the book
 	 * @return int pages

@@ -10,6 +10,12 @@ public class eBook extends Book {
 		this.format = format;
 	}
 
+	public eBook(eBook book) {
+		super(book.getBarcode(), book.getTitle(), book.getLanguage(), book.getGenre(), book.getDate(), book.getQuantity(), book.getPrice());
+		this.pages = book.getPages();
+		this.format = book.getFormat();
+	}
+
 	/**
 	 * Get the pages of the eBook
 	 * @return int pages

@@ -19,7 +19,6 @@ public class Customer extends User {
     public void addItem(Book book) {
         // Change the quantity of the book in the basket if book already exists if not set quantity to 1
         for (Book b : this.basket) {
-            //TODO: Figure out why the quantity is changing for both basket and bookMap
             if (b.getBarcode() == book.getBarcode()) {
                 b.setQuantity(1, true);
                 return;
