@@ -11,22 +11,17 @@ import java.awt.event.ActionEvent;
 
 public class LoginFrame extends JFrame {
 
-    private JPanel contentPane;
-
-    /**
-     * Create the frame.
-     */
     public LoginFrame(HashMap<String, User> userList) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 450, 300);
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
         // Creating array of usernames
-        String userArray[] = userList.keySet().toArray(new String[userList.size()]);
+        String[] userArray = userList.keySet().toArray(new String[userList.size()]);
 
         // Creating frame components
         JComboBox comboBox = new JComboBox(userArray);

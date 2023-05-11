@@ -47,7 +47,7 @@ public class Customer extends User {
      * Pays for the basket and updates the stock and balance
      * @throws IllegalArgumentException if the customer does not have enough credits to pay for the basket
      */
-    public void payBasket() {
+    public void payBasket() throws Exception {
         float total = this.getBasketTotal();
         if (this.credits >= total) {
             this.setCredits(total);
@@ -57,7 +57,7 @@ public class Customer extends User {
             FileReadWrite.updateStock(this.basket);
             this.clearBasket();
         } else {
-            throw new IllegalArgumentException("Insufficient funds");
+            throw new Exception("Insufficient funds");
         }
     }
 

@@ -5,5 +5,5 @@ public enum Format {
 	PDF,
 	MP3,
 	WMA,
-	AAC;
+	AAC
 }

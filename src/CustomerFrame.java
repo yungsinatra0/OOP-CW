@@ -6,15 +6,15 @@ import javax.swing.table.DefaultTableModel;
 
 public class CustomerFrame extends JFrame {
 
-    private JTable bookTable;
-    private ArrayList<Book> bookList;
-    private HashMap<Long, Book> bookMap;
-    private DefaultTableModel dtmBooks;
-    private DefaultTableModel dtmBasket;
-    private JTextField barcodeField;
-    private Customer currentUser;
-    private JSpinner filterSpinner;
-    private JLabel basketTotal;
+    private final JTable bookTable;
+    private final ArrayList<Book> bookList;
+    private final HashMap<Long, Book> bookMap;
+    private final DefaultTableModel dtmBooks;
+    private final DefaultTableModel dtmBasket;
+    private final JTextField barcodeField;
+    private final Customer currentUser;
+    private final JSpinner filterSpinner;
+    private final JLabel basketTotal;
 
     /**
      * Create the frame.
@@ -30,7 +30,7 @@ public class CustomerFrame extends JFrame {
 
         // Set up frame and content pane
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1145, 640);
+        setBounds(100, 100, 1145, 653);
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -38,7 +38,7 @@ public class CustomerFrame extends JFrame {
 
         // Set up tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        tabbedPane.setBounds(10, 11, 1111, 582);
+        tabbedPane.setBounds(10, 28, 1111, 575);
         contentPane.add(tabbedPane);
 
         // Add "View books" panel to tabbed pane
@@ -53,7 +53,7 @@ public class CustomerFrame extends JFrame {
 
         // Add table to panel
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 60, 1086, 485);
+        scrollPane.setBounds(10, 60, 1086, 476);
         panel.add(scrollPane);
 
         // Set up table model and fill it with book data
@@ -130,7 +130,7 @@ public class CustomerFrame extends JFrame {
 
         // Add button for going back to log in frame
         JButton logOutButton = new JButton("Log out");
-        logOutButton.setBounds(1032, 10, 89, 23);
+        logOutButton.setBounds(1032, 5, 89, 23);
         contentPane.add(logOutButton);
         logOutButton.addActionListener(e -> {
             LoginFrame loginFrame = new LoginFrame(FileReadWrite.readUsers());
@@ -202,19 +202,14 @@ public class CustomerFrame extends JFrame {
         panel_1.add(payBasketButton);
 
         // Add action listener to add to basket button to add book to basket and update table
-        addBasketButton.addActionListener(e -> {
-            addToBasket();
-        });
+        addBasketButton.addActionListener(e -> addToBasket());
 
         // Add action listener to pay basket button to pay for basket and clear basket and table
         payBasketButton.addActionListener(e -> {
             try {
-                //TODO: Add method to check if quantity of books in basket is not bigger than stock
                 if (currentUser.getBasket().size() == 0) {
-                    JOptionPane.showMessageDialog(null, "Basket is empty!");
                     throw new Exception("Basket is empty!");
                 } else if (isBasketMoreThanStock()) {
-                    JOptionPane.showMessageDialog(null, "There is not enough stock for the books in your basket!");
                     throw new Exception("There is not enough stock for the books in your basket!");
                 } else {
                     currentUser.payBasket(); // Pay for basket
@@ -225,7 +220,7 @@ public class CustomerFrame extends JFrame {
                     userBalance.setText(String.format("Current balance: %.2f", currentUser.getCredits()));
                 }
             } catch (Exception exception) {
-                // JOptionPane.showMessageDialog(null, exception.getMessage());
+                 JOptionPane.showMessageDialog(null, exception.getMessage());
             }
         });
     }
@@ -234,7 +229,7 @@ public class CustomerFrame extends JFrame {
      * Method to search for book by barcode
      */
     private void searchBarcode() {
-        ArrayList<Book> searchResult = new ArrayList<Book>();
+        ArrayList<Book> searchResult = new ArrayList<>();
         // Use bookMap to search for barcode
         long barcode = Long.parseLong(barcodeField.getText());
         if (bookMap.containsKey(barcode)) {
@@ -252,7 +247,7 @@ public class CustomerFrame extends JFrame {
     private void filterBooks() {
         // Get value from spinner
         int hours = (int) filterSpinner.getValue();
-        ArrayList<Book> searchResult = new ArrayList<Book>();
+        ArrayList<Book> searchResult = new ArrayList<>();
 
         for (Book book : bookList) {
             if (book instanceof Audiobook) {
@@ -280,7 +275,6 @@ public class CustomerFrame extends JFrame {
                 // Get book from barcode
                 long barcode = (long) bookTable.getValueAt(row, 0);
                 // Make a copy of the book
-                // TODO: Make a copy of the book instead of being a reference to bookMap maybe?
                 Book book = bookMap.get(barcode);
                 if (book.getQuantity() == 0) {
                     // throw new Exception(String.format("Book %s is out of stock", book.getTitle()));

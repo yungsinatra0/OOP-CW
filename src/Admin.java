@@ -8,11 +8,10 @@ public class Admin extends User {
 
 	/**
 	 * Adds the book to the book list and stock file (Stock.txt)
-	 * @param bookList
-	 * @param book
+	 * @param bookList HashMap of books
+	 * @param book Book to add
 	 */
 	public void addBook(HashMap<Long, Book> bookList, Book book) {
-		//TODO: Add functionality to check whether the added book is already there
 		bookList.put(book.getBarcode(), book);
 		FileReadWrite.writeBook(book);
 	}

@@ -1,3 +1,4 @@
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.*;
@@ -8,26 +9,26 @@ import java.util.HashMap;
 
 public class AdminFrame extends JFrame {
 
-    private DefaultTableModel dtmBooks;
-    private ArrayList<Book> bookList;
-    private HashMap<Long, Book> bookMap;
-    private JTextField barcodeField;
-    private JTextField titleField;
-    private JTextField dateField;
-    private JTextField quantityField;
-    private JTextField priceField;
-    private JTextField extraField1;
-    private JComboBox languageCB;
-    private JComboBox genreCB;
-    private JComboBox extraCB;
-    private JComboBox bookType;
-    private Admin currentUser;
+    private final DefaultTableModel dtmBooks;
+    private final HashMap<Long, Book> bookMap;
+    private final JTextField barcodeField;
+    private final JTextField titleField;
+    private final JTextField dateField;
+    private final JTextField quantityField;
+    private final JTextField priceField;
+    private final JTextField extraField1;
+    private final JComboBox<BookLanguage> languageCB;
+    private final JComboBox<BookGenre> genreCB;
+    private final JComboBox extraCB;
+    private final JComboBox<BookType> bookType;
+    private final Admin currentUser;
 
     /**
      * Create the frame.
      */
     public AdminFrame(Admin currentUser) {
         // Initialize variables
+        ArrayList<Book> bookList;
         this.currentUser = currentUser;
 
         // Sort the list of books by quantity in ascending order
@@ -89,9 +90,11 @@ public class AdminFrame extends JFrame {
         genreLabel.setBounds(36, 567, 86, 18);
         contentPane.add(genreLabel);
 
-        genreCB = new JComboBox(BookGenre.values());
+        genreCB = new JComboBox<>(BookGenre.values());
         genreCB.setBounds(132, 563, 124, 22);
         contentPane.add(genreCB);
+        // Set the default value of the combo box
+        genreCB.setSelectedItem(BookGenre.POLITICS);
 
         // Label and input field for Quantity
         JLabel quantityLabel = new JLabel("Quantity");
@@ -138,15 +141,17 @@ public class AdminFrame extends JFrame {
         languageLabel.setBounds(36, 536, 86, 17);
         contentPane.add(languageLabel);
 
-        languageCB = new JComboBox(BookLanguage.values());
+        languageCB = new JComboBox<>(BookLanguage.values());
         languageCB.setBounds(132, 533, 124, 20);
         contentPane.add(languageCB);
+        // Set a default value for the combo box
+        languageCB.setSelectedItem(BookLanguage.ENGLISH);
 
         // Label and field that will contain either length or hours
         JLabel extraLabel1 = new JLabel();
         extraLabel1.setBounds(494, 476, 86, 17);
         contentPane.add(extraLabel1);
-        extraLabel1.setText("Length");
+        extraLabel1.setText("Pages");
 
         extraField1 = new JTextField();
         extraField1.setBounds(589, 475, 86, 20);
@@ -159,18 +164,23 @@ public class AdminFrame extends JFrame {
         contentPane.add(extraLabel2);
         extraLabel2.setText("Condition");
 
-        extraCB = new JComboBox(Condition.values());
+        extraCB = new JComboBox<>(Condition.values());
         extraCB.setBounds(589, 504, 124, 20);
         contentPane.add(extraCB);
+        // Set a default value for the combo box
+        extraCB.setSelectedItem(Condition.NEW);
 
         // Create combo box to choose the type of book
         JLabel bookTypeLabel = new JLabel("Book Type");
         bookTypeLabel.setBounds(292, 568, 86, 17);
         contentPane.add(bookTypeLabel);
 
-        bookType = new JComboBox(BookType.values());
+        // Create combo box to choose the type of book (paperback, audiobook, etc.)
+        bookType = new JComboBox<>(BookType.values());
         bookType.setBounds(388, 565, 124, 20);
         contentPane.add(bookType);
+        // Add a default value to the combo box to null and add some text to the box
+        bookType.setSelectedItem(null);
 
         // Create a button to add the book to the list
         JButton btnAddBook = new JButton("Add Book");
@@ -178,55 +188,63 @@ public class AdminFrame extends JFrame {
         contentPane.add(btnAddBook);
 
         bookType.addActionListener(e -> {
+            // Get the chosen book type
             BookType chosenType = (BookType) bookType.getSelectedItem();
-            if (chosenType == BookType.PAPERBACK) {
-                // Change the title of the panel and the labels and input fields for the 'specific attributes' of a paperback
-                extraLabel1.setText("Pages");
-                extraLabel2.setText("Condition");
-                extraCB.removeAllItems();
-                for (Condition bookCondition : Condition.values()) {
-                    extraCB.addItem(bookCondition);
+
+            // Remove any existing action listeners from btnAddBook
+            for (ActionListener listener : btnAddBook.getActionListeners()) {
+                btnAddBook.removeActionListener(listener);
+            }
+
+            switch (chosenType) {
+                case PAPERBACK -> {
+                    // Change the title of the panel and the labels and input fields for the 'specific attributes' of a paperback
+                    extraLabel1.setText("Pages");
+                    extraLabel2.setText("Condition");
+                    extraCB.removeAllItems();
+                    for (Condition bookCondition : Condition.values()) {
+                        extraCB.addItem(bookCondition);
+                    }
+
+                    // Add an action listener to add book, clear the fields and update the table
+                    btnAddBook.addActionListener(event -> {
+                        addBook(BookType.PAPERBACK);
+                        clearFields();
+                        HelperTable.updateTable(dtmBooks, true);
+                    });
                 }
+                case EBOOK -> {
+                    // Change the title of the panel and the labels and input fields for the 'specific attributes' of an eBook
+                    extraLabel1.setText("Pages");
+                    extraLabel2.setText("Format");
+                    extraCB.removeAllItems();
+                    for (Format bookFormat : Format.values()) {
+                        extraCB.addItem(bookFormat);
+                    }
 
-                // Add an action listener to add book, clear the fields and update the table
-                btnAddBook.addActionListener(event -> {
-                    addBook(BookType.AUDIOBOOK);
-                    clearFields();
-                    HelperTable.updateTable(dtmBooks, true);
-                });
-
-
-            } else if (chosenType == BookType.EBOOK) {
-                // Change the title of the panel and the labels and input fields for the 'specific attributes' of an eBook
-                extraLabel1.setText("Pages");
-                extraLabel2.setText("Format");
-                extraCB.removeAllItems();
-                for (Format bookFormat : Format.values()) {
-                    extraCB.addItem(bookFormat);
+                    // Add an action listener to the button to add book, clear the fields and update the table
+                    btnAddBook.addActionListener(event -> {
+                        addBook(BookType.EBOOK);
+                        clearFields();
+                        HelperTable.updateTable(dtmBooks, true);
+                    });
                 }
+                case AUDIOBOOK -> {
+                    // Change the title of the panel and the labels and input fields for the 'specific attributes' of an audiobook
+                    extraLabel1.setText("Length");
+                    extraLabel2.setText("Format");
+                    extraCB.removeAllItems();
+                    for (Format bookFormat : Format.values()) {
+                        extraCB.addItem(bookFormat);
+                    }
 
-                // Add an action listener to the button to add book, clear the fields and update the table
-                btnAddBook.addActionListener(event -> {
-                    addBook(BookType.EBOOK);
-                    clearFields();
-                    HelperTable.updateTable(dtmBooks, true);
-                });
-
-            } else if (chosenType == BookType.AUDIOBOOK) {
-                // Change the title of the panel and the labels and input fields for the 'specific attributes' of an audiobook
-                extraLabel1.setText("Length");
-                extraLabel2.setText("Format");
-                extraCB.removeAllItems();
-                for (Format bookFormat : Format.values()) {
-                    extraCB.addItem(bookFormat);
+                    // Add an action listener to the button to add book, clear the fields and update the table
+                    btnAddBook.addActionListener(event -> {
+                        addBook(BookType.AUDIOBOOK);
+                        clearFields();
+                        HelperTable.updateTable(dtmBooks, true);
+                    });
                 }
-
-                // Add an action listener to the button to add book, clear the fields and update the table
-                btnAddBook.addActionListener(event -> {
-                    addBook(BookType.PAPERBACK);
-                    clearFields();
-                    HelperTable.updateTable(dtmBooks, true);
-                });
             }
         });
     }
@@ -238,12 +256,17 @@ public class AdminFrame extends JFrame {
      */
     private void addBook(BookType type) {
         try {
+            // Check if these fields are empty
+            if (titleField.getText().isEmpty() || dateField.getText().isEmpty() || quantityField.getText().isEmpty() ||
+                    priceField.getText().isEmpty() || extraField1.getText().isEmpty()) {
+                throw new Exception("Please fill in all the fields");
+            }
+
             long barcode = Long.parseLong(barcodeField.getText());
 
             // Check if barcode already exists in book list using hashmap
             if (bookMap.containsKey(barcode)) {
-                JOptionPane.showMessageDialog(null, "Barcode already exists");
-                return;
+                throw new Exception("Barcode already exists");
             }
 
             String title = titleField.getText();
@@ -253,25 +276,36 @@ public class AdminFrame extends JFrame {
             int quantity = Integer.parseInt(quantityField.getText());
             float price = Float.parseFloat(priceField.getText());
             int pages = Integer.parseInt(extraField1.getText());
-            Format format = (Format) extraCB.getSelectedItem();
 
             // Add book to the list depending on the type of book (using different constructors)
             switch (type) {
-                case PAPERBACK:
+                case PAPERBACK -> {
                     Condition condition = (Condition) extraCB.getSelectedItem();
                     currentUser.addBook(bookMap, new Paperback(barcode, title, language, genre, date, quantity, price, pages, condition));
-                    break;
-                case EBOOK:
+                }
+                case EBOOK -> {
+                    Format format = (Format) extraCB.getSelectedItem();
+                    if (format == Format.MP3 || format == Format.WMA || format == Format.AAC) {
+                        throw new Exception("Please choose a valid eBook format");
+                    }
                     currentUser.addBook(bookMap, new eBook(barcode, title, language, genre, date, quantity, price, pages, format));
-                    break;
-                case AUDIOBOOK:
+                }
+                case AUDIOBOOK -> {
+                    Format audioFormat = (Format) extraCB.getSelectedItem();
+                    if (audioFormat == Format.EPUB || audioFormat == Format.PDF || audioFormat == Format.MOBI) {
+                        throw new Exception("Please choose a valid audiobook format");
+                    }
                     float length = Float.parseFloat(extraField1.getText());
-                    currentUser.addBook(bookMap, new Audiobook(barcode, title, language, genre, date, quantity, price, length, format));
-                    break;
+                    currentUser.addBook(bookMap, new Audiobook(barcode, title, language, genre, date, quantity, price, length, audioFormat));
+                }
             }
             JOptionPane.showMessageDialog(null, "Book added successfully");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Please enter valid data");
+            if (e.getMessage() == null) {
+                JOptionPane.showMessageDialog(null, "Please enter valid data!");
+            } else {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
         }
     }
 

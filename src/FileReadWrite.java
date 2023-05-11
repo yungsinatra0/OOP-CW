@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -14,10 +15,10 @@ public class FileReadWrite {
      * @return HashMap of users
      */
     public static HashMap<String, User> readUsers() {
-        HashMap<String, User> userList = new HashMap<String, User>();
+        HashMap<String, User> userList = new HashMap<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader("UserAccounts.txt"));
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 String[] elements = line.split(", ");
                 // If the user is an admin, create an admin object and add it to the HashMap
@@ -26,7 +27,7 @@ public class FileReadWrite {
                     userList.put(tempUser.getUsername(), tempUser);
                 } else {
                     // If the user is a customer, create a customer object and add it to the HashMap
-                    Customer tempUser = new Customer(Integer.parseInt(elements[0]), elements[1], elements[2], Integer.parseInt(elements[3]), elements[4], elements[5], Float.parseFloat(elements[6]), new ArrayList<Book>());
+                    Customer tempUser = new Customer(Integer.parseInt(elements[0]), elements[1], elements[2], Integer.parseInt(elements[3]), elements[4], elements[5], Float.parseFloat(elements[6]), new ArrayList<>());
                     userList.put(tempUser.getUsername(), tempUser);
                 }
             }
@@ -75,10 +76,10 @@ public class FileReadWrite {
      * @return HashMap of books
      */
     public static HashMap<Long, Book> readBooks() {
-        HashMap<Long, Book> bookMap = new HashMap<Long, Book>();
+        HashMap<Long, Book> bookMap = new HashMap<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader("Stock.txt"));
-            String line = null;
+            String line;
 
             while ((line = reader.readLine()) != null) {
                 String[] elements = line.split(", ");
@@ -113,7 +114,7 @@ public class FileReadWrite {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
         return bookMap;
     }
@@ -130,8 +131,7 @@ public class FileReadWrite {
             writer.write(book.toString());
             writer.close();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
@@ -144,8 +144,8 @@ public class FileReadWrite {
         // Get book object and update the quantity of that book in stock.txt
         try {
             BufferedReader reader = new BufferedReader(new FileReader("Stock.txt"));
-            String line = null;
-            boolean found = false;
+            String line;
+            boolean found;
             String input = "";
             while ((line = reader.readLine()) != null) {
                 String[] elements = line.split(", ");

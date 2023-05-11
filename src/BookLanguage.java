@@ -2,5 +2,5 @@
 
 public enum BookLanguage {
 	ENGLISH,
-	FRENCH;
+	FRENCH
 }

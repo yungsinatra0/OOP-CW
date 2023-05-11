@@ -2,5 +2,5 @@
 
 public enum Condition {
 	NEW,
-	USED;
+	USED
 }
